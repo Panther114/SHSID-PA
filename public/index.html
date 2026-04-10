@@ -5,236 +5,147 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SHSID Peer Advisors</title>
   <link rel="icon" type="image/png" href="/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  <link rel="stylesheet" href="/styles.css" />
   <script>
-    // Apply saved theme before paint to avoid flash
-    (function(){ var t=localStorage.getItem('pa-theme'); if(t==='light') document.documentElement.setAttribute('data-theme','light'); })();
+    (function(){
+      var t = localStorage.getItem('pa-theme');
+      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+      else if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    })();
   </script>
   <style>
-    /* ── Theme variables ── */
-    :root {
-      --nav-bg: #9b3060;
-      --nav-text: #fff;
-      --nav-link: #fce4ec;
-      --nav-link-hover: #fff;
-      --body-bg: #fff8fb;
-      --text-primary: #2d1020;
-      --text-secondary: #7a4560;
-      --accent: #c2185b;
-      --card-bg: #ffffff;
-      --card-top: #e91e8c;
-      --card-shadow: rgba(194,24,91,0.10);
-      --section-h2-color: #2d1020;
-      --section-border: #c2185b;
-      --hero-from: #9b3060;
-      --hero-mid: #ad1457;
-      --hero-to: #880e4f;
-      --hero-sub: #fce4ec;
-      --btn-primary-bg: #c2185b;
-      --btn-primary-text: #fff;
-      --footer-border: #f0c8d8;
-      --footer-text: #b07090;
-      --toggle-bg: rgba(255,255,255,0.18);
-      --toggle-text: #fff;
-      --toggle-border: rgba(255,255,255,0.35);
-    }
-    [data-theme="light"] {
-      --nav-bg: #1a1a2e;
-      --nav-text: #fff;
-      --nav-link: #cdd3f0;
-      --nav-link-hover: #fff;
-      --body-bg: #f8f9fc;
-      --text-primary: #1a1a2e;
-      --text-secondary: #555;
-      --accent: #e94560;
-      --card-bg: #ffffff;
-      --card-top: #e94560;
-      --card-shadow: rgba(0,0,0,0.07);
-      --section-h2-color: #1a1a2e;
-      --section-border: #e94560;
-      --hero-from: #1a1a2e;
-      --hero-mid: #16213e;
-      --hero-to: #0f3460;
-      --hero-sub: #a8b4d8;
-      --btn-primary-bg: #e94560;
-      --btn-primary-text: #fff;
-      --footer-border: #e0e0e0;
-      --footer-text: #888;
-      --toggle-bg: rgba(255,255,255,0.12);
-      --toggle-text: #cdd3f0;
-      --toggle-border: rgba(255,255,255,0.25);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      color: var(--text-primary);
-      background: var(--body-bg);
-      line-height: 1.6;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    /* ── NAV ── */
-    nav {
-      background: var(--nav-bg);
-      color: var(--nav-text);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.5rem;
-      height: 62px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-    }
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      text-decoration: none;
-    }
-    .nav-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-    .nav-brand {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      color: var(--nav-text);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-    .nav-links a {
-      color: var(--nav-link);
-      text-decoration: none;
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.92rem;
-      transition: color 0.2s, background 0.2s;
-    }
-    .nav-links a:hover { color: var(--nav-link-hover); background: rgba(255,255,255,0.1); }
-
-    /* Theme toggle */
-    .theme-toggle {
-      background: var(--toggle-bg);
-      color: var(--toggle-text);
-      border: 1px solid var(--toggle-border);
-      border-radius: 20px;
-      padding: 0.3rem 0.8rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: background 0.2s, opacity 0.2s;
-      margin-left: 0.5rem;
-      white-space: nowrap;
-    }
-    .theme-toggle:hover { opacity: 0.85; }
-    .theme-toggle .toggle-icon { font-size: 0.95rem; }
-
     /* ── HERO ── */
     .hero {
-      background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-mid) 55%, var(--hero-to) 100%);
-      color: #fff;
-      padding: 5.5rem 2rem 4.5rem;
+      background: var(--hero-gradient);
+      color: var(--hero-text);
+      padding: 7rem 2rem 5.5rem;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 70% at 50% 110%, rgba(255,255,255,0.12) 0%, transparent 65%);
+      pointer-events: none;
     }
     .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      margin-bottom: 1rem;
-      letter-spacing: -0.5px;
+      font-size: clamp(2.2rem, 5.5vw, 4rem);
+      font-weight: 900;
+      margin-bottom: 1.1rem;
+      letter-spacing: -1px;
+      line-height: 1.12;
+      color: var(--hero-text);
+      position: relative;
+      z-index: 1;
     }
     .hero p {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       color: var(--hero-sub);
-      max-width: 640px;
-      margin: 0 auto 2.25rem;
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
     }
-    .btn {
-      display: inline-block;
-      padding: 0.75rem 2.2rem;
-      border-radius: 8px;
+    .hero .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.82rem 2.2rem;
+      border-radius: 50px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.15s;
       border: none;
+      font-family: inherit;
+      background: linear-gradient(135deg, var(--hero-btn-from) 0%, var(--hero-btn-to) 100%);
+      color: var(--hero-text);
+      box-shadow: var(--hero-btn-shadow);
+      transition: all 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 1;
     }
-    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-    .btn-primary {
-      background: var(--btn-primary-bg);
-      color: var(--btn-primary-text);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    [data-theme="light"] .hero .btn-hero { color: #1d4ed8; }
+    .hero .btn-hero:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.22);
+      filter: brightness(1.04);
     }
+    .hero .btn-hero:active { transform: scale(0.97); }
 
     /* ── SECTIONS ── */
     section {
-      max-width: 900px;
-      margin: 3.5rem auto;
+      max-width: 920px;
+      margin: 4rem auto;
       padding: 0 1.5rem;
     }
     section h2 {
-      font-size: 1.75rem;
-      font-weight: 700;
+      font-size: 1.8rem;
+      font-weight: 800;
       margin-bottom: 1rem;
-      color: var(--section-h2-color);
-      border-left: 4px solid var(--section-border);
-      padding-left: 0.75rem;
+      color: var(--text-primary);
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
-    section p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+    section h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 1.6rem;
+      border-radius: 4px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-2) 100%);
+      flex-shrink: 0;
+    }
+    section p { color: var(--text-secondary); margin-bottom: 0.8rem; }
 
     /* ── CARDS ── */
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 1.25rem;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
     .card {
       background: var(--card-bg);
-      border-radius: 12px;
-      padding: 1.6rem;
-      box-shadow: 0 2px 14px var(--card-shadow);
-      border-top: 3px solid var(--card-top);
-      transition: transform 0.2s, box-shadow 0.2s;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 18px;
+      padding: 1.75rem 1.6rem;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--card-border);
+      border-left: 3px solid var(--card-accent);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
     }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 22px var(--card-shadow); }
-    .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--text-primary); }
-    .card p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.85rem;
-      color: var(--footer-text);
-      border-top: 1px solid var(--footer-border);
-      margin-top: 4rem;
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--card-shadow-hover);
     }
+    .card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+    .card p { font-size: 0.88rem; color: var(--text-secondary); margin: 0; }
 
-    /* ── Mobile ── */
     @media (max-width: 540px) {
-      nav { padding: 0 1rem; }
-      .nav-brand { font-size: 1rem; }
-      .theme-toggle span.toggle-label { display: none; }
+      .hero { padding: 5rem 1.25rem 4rem; }
+      section { margin: 2.5rem auto; }
     }
   </style>
 </head>
@@ -251,7 +162,7 @@
       <a href="#about">About</a>
     </div>
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-      <span class="toggle-icon">🌸</span><span class="toggle-label">Pink</span>
+      <span class="theme-dot"></span><span class="toggle-label">Pink</span>
     </button>
   </div>
 </nav>
@@ -259,7 +170,7 @@
 <div class="hero">
   <h1>Academic Guides by Peers</h1>
   <p>Curated study guides written by SHSID students, for SHSID students. Find resources for every subject and level.</p>
-  <a href="guides.html" class="btn btn-primary">Browse Guides →</a>
+  <a href="guides.html" class="btn-hero">Browse Guides →</a>
 </div>
 
 <section id="about">
@@ -275,14 +186,17 @@
 
   <div class="card-grid">
     <div class="card">
+      <span class="card-icon">✍️</span>
       <h3>Student-Written</h3>
       <p>Every guide is authored by a fellow SHSID student who has excelled in that subject.</p>
     </div>
     <div class="card">
+      <span class="card-icon">📊</span>
       <h3>Multi-Level</h3>
       <p>Guides are tagged Beginner, Intermediate, or Advanced so you can find the right fit.</p>
     </div>
     <div class="card">
+      <span class="card-icon">🎓</span>
       <h3>Always Free</h3>
       <p>All materials are freely available to every SHSID student, no sign-up required to read.</p>
     </div>
@@ -294,28 +208,31 @@
 </footer>
 
 <script>
-  /* ── Theme toggle ── */
+  const THEMES = ['pink', 'light', 'dark'];
+  const LABELS = { pink: 'Pink', light: 'Light', dark: 'Dark' };
   const toggleBtn = document.getElementById('theme-toggle');
 
-  function syncToggle() {
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    toggleBtn.innerHTML = isLight
-      ? '<span class="toggle-icon">☀️</span><span class="toggle-label">Light</span>'
-      : '<span class="toggle-icon">🌸</span><span class="toggle-label">Pink</span>';
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'pink';
+  }
+
+  function applyTheme(t) {
+    if (t === 'pink') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('pa-theme', t);
+    syncToggle(t);
+  }
+
+  function syncToggle(t) {
+    t = t || getTheme();
+    toggleBtn.innerHTML = `<span class="theme-dot"></span><span class="toggle-label">${LABELS[t]}</span>`;
   }
 
   syncToggle();
 
   toggleBtn.addEventListener('click', () => {
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    if (isLight) {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('pa-theme', 'pink');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('pa-theme', 'light');
-    }
-    syncToggle();
+    const next = THEMES[(THEMES.indexOf(getTheme()) + 1) % THEMES.length];
+    applyTheme(next);
   });
 </script>
 </body>

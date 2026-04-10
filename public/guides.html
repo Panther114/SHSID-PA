@@ -5,171 +5,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Guides – SHSID Peer Advisors</title>
   <link rel="icon" type="image/png" href="/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  <link rel="stylesheet" href="/styles.css" />
   <script>
-    // Apply saved theme before paint to avoid flash
-    (function(){ var t=localStorage.getItem('pa-theme'); if(t==='light') document.documentElement.setAttribute('data-theme','light'); })();
+    (function(){
+      var t = localStorage.getItem('pa-theme');
+      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+      else if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    })();
   </script>
   <style>
-    /* ── Theme variables ── */
-    :root {
-      --nav-bg: #9b3060;
-      --nav-text: #fff;
-      --nav-link: #fce4ec;
-      --nav-link-hover: #fff;
-      --body-bg: #fff8fb;
-      --text-primary: #2d1020;
-      --text-secondary: #7a4560;
-      --accent: #c2185b;
-      --card-bg: #ffffff;
-      --card-shadow: rgba(194,24,91,0.09);
-      --card-shadow-hover: rgba(194,24,91,0.17);
-      --subject-border: #c2185b;
-      --level-color: #c06080;
-      --modal-bg: #fff;
-      --modal-input-border: #e0b0c8;
-      --modal-input-focus: #c2185b;
-      --btn-outline-color: #fce4ec;
-      --btn-outline-border: rgba(252,228,236,0.6);
-      --btn-primary-bg: #c2185b;
-      --btn-primary-text: #fff;
-      --pdf-link: #c2185b;
-      --footer-border: #f0c8d8;
-      --footer-text: #b07090;
-      --toggle-bg: rgba(255,255,255,0.18);
-      --toggle-text: #fff;
-      --toggle-border: rgba(255,255,255,0.35);
-    }
-    [data-theme="light"] {
-      --nav-bg: #1a1a2e;
-      --nav-text: #fff;
-      --nav-link: #cdd3f0;
-      --nav-link-hover: #fff;
-      --body-bg: #f8f9fc;
-      --text-primary: #1a1a2e;
-      --text-secondary: #555;
-      --accent: #e94560;
-      --card-bg: #ffffff;
-      --card-shadow: rgba(0,0,0,0.07);
-      --card-shadow-hover: rgba(0,0,0,0.13);
-      --subject-border: #e94560;
-      --level-color: #888;
-      --modal-bg: #fff;
-      --modal-input-border: #ccc;
-      --modal-input-focus: #e94560;
-      --btn-outline-color: #cdd3f0;
-      --btn-outline-border: #cdd3f0;
-      --btn-primary-bg: #e94560;
-      --btn-primary-text: #fff;
-      --pdf-link: #e94560;
-      --footer-border: #e0e0e0;
-      --footer-text: #888;
-      --toggle-bg: rgba(255,255,255,0.12);
-      --toggle-text: #cdd3f0;
-      --toggle-border: rgba(255,255,255,0.25);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
+    /* ── MAIN ── */
+    main { max-width: 980px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    main h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 0.3rem;
       color: var(--text-primary);
-      background: var(--body-bg);
-      line-height: 1.6;
-      transition: background 0.3s, color 0.3s;
+      letter-spacing: -0.6px;
+    }
+    .subtitle { color: var(--text-secondary); margin-bottom: 2.5rem; font-size: 0.97rem; }
+
+    /* ── SUBJECT GROUP ── */
+    .subject-group { margin-bottom: 3.5rem; }
+    .subject-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.4px;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.4rem;
+      border-bottom: 2px solid transparent;
+      border-image: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 60%, transparent 100%) 1;
     }
 
-    /* ── NAV ── */
-    nav {
-      background: var(--nav-bg);
-      color: var(--nav-text);
+    /* ── LEVEL GROUP ── */
+    .level-group { margin-bottom: 1.75rem; }
+    .level-heading {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--level-color);
+      margin-bottom: 0.7rem;
+      opacity: 0.85;
+    }
+
+    /* ── GUIDE CARD ── */
+    .guide-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 1rem 1.35rem;
+      margin-bottom: 0.6rem;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--card-border);
+      border-left: 3px solid var(--card-accent);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.5rem;
-      height: 62px;
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      gap: 1rem;
+      transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s ease;
     }
-    .nav-left {
-      display: flex;
+    .guide-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+    .guide-info { flex: 1; min-width: 0; }
+    .guide-title {
+      font-weight: 600;
+      font-size: 0.97rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+      letter-spacing: -0.1px;
+    }
+    .guide-meta { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.18rem; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex;
       align-items: center;
-      gap: 0.65rem;
-      text-decoration: none;
-    }
-    .nav-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      object-fit: cover;
+      padding: 0.22rem 0.7rem;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      white-space: nowrap;
       flex-shrink: 0;
     }
-    .nav-brand {
-      font-size: 1.15rem;
+    .badge-beginner    { background: var(--badge-bg-beginner);    color: var(--badge-text-beginner); }
+    .badge-intermediate{ background: var(--badge-bg-intermediate); color: var(--badge-text-intermediate); }
+    .badge-advanced    { background: var(--badge-bg-advanced);    color: var(--badge-text-advanced); }
+    .badge-default     { background: rgba(128,128,128,0.15);      color: var(--text-secondary); }
+
+    /* ── PDF LINK ── */
+    .pdf-link {
+      color: var(--pdf-link);
+      text-decoration: none;
+      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--nav-text);
-      text-decoration: none;
       white-space: nowrap;
+      flex-shrink: 0;
+      padding: 0.28rem 0.72rem;
+      border-radius: 50px;
+      background: var(--pdf-link-bg);
+      border: 1px solid transparent;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .nav-right { display: flex; align-items: center; gap: 0.5rem; }
-    .nav-right a {
-      color: var(--nav-link);
-      text-decoration: none;
-      padding: 0.35rem 0.7rem;
-      border-radius: 6px;
-      font-size: 0.92rem;
-      transition: color 0.2s, background 0.2s;
-    }
-    .nav-right a:hover { color: var(--nav-link-hover); background: rgba(255,255,255,0.1); }
-
-    .btn {
-      display: inline-block;
-      padding: 0.42rem 1.1rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: opacity 0.2s;
-    }
-    .btn:hover { opacity: 0.85; }
-    .btn-outline {
-      background: transparent;
-      color: var(--btn-outline-color);
-      border: 1px solid var(--btn-outline-border);
-    }
-    .btn-primary {
-      background: var(--btn-primary-bg);
-      color: var(--btn-primary-text);
+    .pdf-link:hover {
+      background: var(--pdf-link-hover-bg);
+      transform: translateY(-1px);
     }
 
-    /* Theme toggle */
-    .theme-toggle {
-      background: var(--toggle-bg);
-      color: var(--toggle-text);
-      border: 1px solid var(--toggle-border);
-      border-radius: 20px;
-      padding: 0.3rem 0.8rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: background 0.2s, opacity 0.2s;
-      white-space: nowrap;
-    }
-    .theme-toggle:hover { opacity: 0.85; }
-    .toggle-icon { font-size: 0.95rem; }
+    /* ── LOADING / ERROR ── */
+    #loading { text-align: center; color: var(--text-secondary); padding: 4rem; font-size: 0.95rem; }
+    #error-msg { color: #e11d48; text-align: center; padding: 2rem; display: none; }
 
     /* ── MODAL ── */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       z-index: 300;
       align-items: center;
       justify-content: center;
@@ -177,143 +143,107 @@
     .modal-overlay.open { display: flex; }
     .modal {
       background: var(--modal-bg);
-      border-radius: 14px;
-      padding: 2rem;
-      width: min(400px, 92vw);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 20px;
+      padding: 2.2rem;
+      width: min(420px, 93vw);
+      box-shadow: var(--modal-shadow);
+      border: 1px solid var(--modal-border);
       position: relative;
+      animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .modal h2 { margin-bottom: 1.25rem; font-size: 1.3rem; color: var(--text-primary); }
-    .modal label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary); }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.9) translateY(12px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .modal label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+      color: var(--text-secondary);
+    }
     .modal input {
       width: 100%;
-      padding: 0.6rem 0.75rem;
+      padding: 0.65rem 0.9rem;
       border: 1px solid var(--modal-input-border);
-      border-radius: 7px;
+      border-radius: 10px;
       font-size: 0.95rem;
-      margin-bottom: 1rem;
-      background: var(--body-bg);
+      margin-bottom: 1.1rem;
+      background: var(--input-bg);
       color: var(--text-primary);
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .modal input:focus { outline: 2px solid var(--modal-input-focus); border-color: transparent; }
-    .modal-error { color: #c0392b; font-size: 0.85rem; margin-bottom: 0.75rem; display: none; }
+    .modal input:focus {
+      outline: none;
+      border-color: var(--modal-input-focus);
+      box-shadow: var(--input-focus-shadow);
+    }
+    .modal-error {
+      color: #e11d48;
+      font-size: 0.84rem;
+      margin-bottom: 0.9rem;
+      display: none;
+      padding: 0.5rem 0.75rem;
+      background: rgba(225, 29, 72, 0.08);
+      border-radius: 8px;
+    }
     .modal-close {
       position: absolute;
-      top: 0.75rem;
-      right: 1rem;
-      font-size: 1.4rem;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      line-height: 1;
-    }
-    .modal-close:hover { color: var(--text-primary); }
-    #login-submit {
-      width: 100%;
-      padding: 0.7rem;
-      background: var(--btn-primary-bg);
-      color: var(--btn-primary-text);
-      border: none;
-      border-radius: 7px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    #login-submit:hover { opacity: 0.88; }
-
-    /* ── MAIN ── */
-    main { max-width: 960px; margin: 2.5rem auto; padding: 0 1.5rem; }
-    main h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; color: var(--text-primary); }
-    .subtitle { color: var(--text-secondary); margin-bottom: 2rem; }
-
-    /* SUBJECT GROUP */
-    .subject-group { margin-bottom: 3rem; }
-    .subject-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      border-bottom: 3px solid var(--subject-border);
-      padding-bottom: 0.4rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .level-group { margin-bottom: 1.5rem; }
-    .level-heading {
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--level-color);
-      margin-bottom: 0.6rem;
-    }
-
-    /* GUIDE CARD */
-    .guide-card {
-      background: var(--card-bg);
-      border-radius: 9px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 0.6rem;
-      box-shadow: 0 1px 6px var(--card-shadow);
+      top: 1rem;
+      right: 1.1rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      transition: box-shadow 0.2s, transform 0.2s;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      background: rgba(128,128,128,0.1);
+      border: none;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      line-height: 1;
     }
-    .guide-card:hover { box-shadow: 0 4px 16px var(--card-shadow-hover); transform: translateY(-1px); }
-    .guide-info { flex: 1; min-width: 0; }
-    .guide-title {
-      font-weight: 600;
-      font-size: 1rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .modal-close:hover {
+      background: rgba(128,128,128,0.2);
       color: var(--text-primary);
     }
-    .guide-meta { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem; }
-
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.55rem;
-      border-radius: 20px;
-      font-size: 0.72rem;
+    #login-submit {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, var(--btn-grad-from) 0%, var(--btn-grad-to) 100%);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 50px;
+      font-size: 0.97rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--btn-shadow);
     }
-    .badge-beginner    { background: #d4edda; color: #155724; }
-    .badge-intermediate{ background: #fff3cd; color: #856404; }
-    .badge-advanced    { background: #f8d7da; color: #721c24; }
-    .badge-default     { background: #e2e3e5; color: #383d41; }
-
-    .pdf-link {
-      color: var(--pdf-link);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .pdf-link:hover { text-decoration: underline; }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.85rem;
-      color: var(--footer-text);
-      border-top: 1px solid var(--footer-border);
-      margin-top: 4rem;
+    #login-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px var(--accent-glow);
+      filter: brightness(1.06);
     }
 
-    #loading { text-align: center; color: var(--text-secondary); padding: 3rem; }
-    #error-msg { color: #c0392b; text-align: center; padding: 2rem; display: none; }
-
-    /* ── Mobile ── */
     @media (max-width: 540px) {
-      nav { padding: 0 1rem; }
-      .nav-brand { font-size: 1rem; }
-      .theme-toggle .toggle-label { display: none; }
+      .guide-card { flex-wrap: wrap; gap: 0.6rem; }
+      .guide-title { white-space: normal; }
     }
   </style>
 </head>
@@ -331,7 +261,7 @@
     </span>
     <button id="login-btn" class="btn btn-outline">Login</button>
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-      <span class="toggle-icon">🌸</span><span class="toggle-label">Pink</span>
+      <span class="theme-dot"></span><span class="toggle-label">Pink</span>
     </button>
   </div>
 </nav>
@@ -433,7 +363,7 @@
       loadingEl.style.display = 'none';
 
       if (guides.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:#888;padding:2rem;">No guides uploaded yet.</p>';
+        container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:2rem;">No guides uploaded yet.</p>';
         return;
       }
 
@@ -496,27 +426,31 @@
   loadGuides();
 
   /* ── Theme toggle ── */
+  const THEMES = ['pink', 'light', 'dark'];
+  const LABELS = { pink: 'Pink', light: 'Light', dark: 'Dark' };
   const toggleBtn = document.getElementById('theme-toggle');
 
-  function syncToggle() {
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    toggleBtn.innerHTML = isLight
-      ? '<span class="toggle-icon">☀️</span><span class="toggle-label">Light</span>'
-      : '<span class="toggle-icon">🌸</span><span class="toggle-label">Pink</span>';
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'pink';
+  }
+
+  function applyTheme(t) {
+    if (t === 'pink') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('pa-theme', t);
+    syncToggle(t);
+  }
+
+  function syncToggle(t) {
+    t = t || getTheme();
+    toggleBtn.innerHTML = `<span class="theme-dot"></span><span class="toggle-label">${LABELS[t]}</span>`;
   }
 
   syncToggle();
 
   toggleBtn.addEventListener('click', () => {
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    if (isLight) {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('pa-theme', 'pink');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('pa-theme', 'light');
-    }
-    syncToggle();
+    const next = THEMES[(THEMES.indexOf(getTheme()) + 1) % THEMES.length];
+    applyTheme(next);
   });
 </script>
 
