@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guides – SHSID Peer Advisors</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #1a1a2e;
+      background: #f8f9fc;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      background: #1a1a2e;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .nav-brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-right a {
+      color: #cdd3f0;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .nav-right a:hover { color: #fff; }
+
+    .btn {
+      display: inline-block;
+      padding: 0.45rem 1.1rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-outline {
+      background: transparent;
+      color: #cdd3f0;
+      border: 1px solid #cdd3f0;
+    }
+    .btn-primary {
+      background: #e94560;
+      color: #fff;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      width: min(400px, 92vw);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .modal h2 { margin-bottom: 1.25rem; font-size: 1.3rem; }
+    .modal label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #333; }
+    .modal input {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    .modal input:focus { outline: 2px solid #e94560; border-color: transparent; }
+    .modal-error { color: #c0392b; font-size: 0.85rem; margin-bottom: 0.75rem; display: none; }
+    .modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 1rem;
+      font-size: 1.4rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #666;
+      line-height: 1;
+    }
+    .modal-close:hover { color: #000; }
+    #login-submit {
+      width: 100%;
+      padding: 0.7rem;
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #login-submit:hover { opacity: 0.88; }
+
+    /* MAIN */
+    main { max-width: 960px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    main h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .subtitle { color: #666; margin-bottom: 2rem; }
+
+    /* SUBJECT GROUP */
+    .subject-group { margin-bottom: 3rem; }
+    .subject-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      border-bottom: 3px solid #e94560;
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .level-group { margin-bottom: 1.5rem; }
+    .level-heading {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 0.6rem;
+    }
+
+    /* GUIDE CARD */
+    .guide-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.6rem;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: box-shadow 0.2s;
+    }
+    .guide-card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.12); }
+    .guide-info { flex: 1; min-width: 0; }
+    .guide-title {
+      font-weight: 600;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .guide-meta { font-size: 0.8rem; color: #888; margin-top: 0.15rem; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .badge-beginner    { background: #d4edda; color: #155724; }
+    .badge-intermediate{ background: #fff3cd; color: #856404; }
+    .badge-advanced    { background: #f8d7da; color: #721c24; }
+    .badge-default     { background: #e2e3e5; color: #383d41; }
+
+    .pdf-link {
+      color: #e94560;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pdf-link:hover { text-decoration: underline; }
+
+    #loading { text-align: center; color: #888; padding: 3rem; }
+    #error-msg { color: #c0392b; text-align: center; padding: 2rem; display: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">SHSID Peer Advisors</a>
+  <div class="nav-right">
+    <a href="index.html">Home</a>
+    <span id="upload-link-wrap" style="display:none">
+      <a href="upload.html" class="btn btn-primary">Upload Guide</a>
+    </span>
+    <button id="login-btn" class="btn btn-outline">Login</button>
+  </div>
+</nav>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
+    <h2 id="modal-title">Advisor Login</h2>
+    <div class="modal-error" id="login-error"></div>
+    <label for="login-email">Email</label>
+    <input type="email" id="login-email" autocomplete="email" placeholder="you@example.com" />
+    <label for="login-password">Password</label>
+    <input type="password" id="login-password" autocomplete="current-password" placeholder="Password" />
+    <button id="login-submit">Sign In</button>
+  </div>
+</div>
+
+<main>
+  <h1>Academic Guides</h1>
+  <p class="subtitle">Browse peer-written study guides, organized by subject and level.</p>
+
+  <div id="loading">Loading guides…</div>
+  <div id="error-msg">Failed to load guides. Please try again later.</div>
+  <div id="guides-container"></div>
+</main>
+
+<script>
+  /* ---- JWT helpers ---- */
+  function parseJwt(token) {
+    try {
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64));
+    } catch { return null; }
+  }
+
+  function isTokenValid(token) {
+    if (!token) return false;
+    const payload = parseJwt(token);
+    if (!payload || !payload.exp) return false;
+    return payload.exp * 1000 > Date.now();
+  }
+
+  /* ---- Auth UI ---- */
+  const token = localStorage.getItem('jwt');
+  const loginBtn = document.getElementById('login-btn');
+  const uploadWrap = document.getElementById('upload-link-wrap');
+
+  if (isTokenValid(token)) {
+    loginBtn.style.display = 'none';
+    uploadWrap.style.display = '';
+  }
+
+  /* Modal */
+  const modal = document.getElementById('login-modal');
+  loginBtn.addEventListener('click', () => modal.classList.add('open'));
+  document.getElementById('modal-close-btn').addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+  document.getElementById('login-submit').addEventListener('click', async () => {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errorEl = document.getElementById('login-error');
+    errorEl.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) { errorEl.textContent = data.error || 'Login failed'; errorEl.style.display = ''; return; }
+      localStorage.setItem('jwt', data.token);
+      modal.classList.remove('open');
+      loginBtn.style.display = 'none';
+      uploadWrap.style.display = '';
+    } catch {
+      errorEl.textContent = 'Network error. Please try again.';
+      errorEl.style.display = '';
+    }
+  });
+
+  /* ---- Load Guides ---- */
+  function badgeClass(level) {
+    const map = { beginner: 'badge-beginner', intermediate: 'badge-intermediate', advanced: 'badge-advanced' };
+    return map[level.toLowerCase()] || 'badge-default';
+  }
+
+  async function loadGuides() {
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error-msg');
+    const container = document.getElementById('guides-container');
+
+    try {
+      const res = await fetch('/api/guides');
+      if (!res.ok) throw new Error('Bad response');
+      const guides = await res.json();
+      loadingEl.style.display = 'none';
+
+      if (guides.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#888;padding:2rem;">No guides uploaded yet.</p>';
+        return;
+      }
+
+      // Group by subject
+      const bySubject = {};
+      for (const g of guides) {
+        (bySubject[g.subject] = bySubject[g.subject] || {})[g.subject_level] =
+          (bySubject[g.subject][g.subject_level] || []).concat(g);
+      }
+
+      const levelOrder = ['Beginner', 'Intermediate', 'Advanced'];
+
+      for (const subject of Object.keys(bySubject).sort()) {
+        const levels = bySubject[subject];
+        const groupEl = document.createElement('div');
+        groupEl.className = 'subject-group';
+
+        const titleEl = document.createElement('h2');
+        titleEl.className = 'subject-title';
+        titleEl.textContent = subject;
+        groupEl.appendChild(titleEl);
+
+        const sortedLevels = [...new Set([...levelOrder, ...Object.keys(levels)])].filter(l => levels[l]);
+        for (const level of sortedLevels) {
+          const levelEl = document.createElement('div');
+          levelEl.className = 'level-group';
+
+          const heading = document.createElement('div');
+          heading.className = 'level-heading';
+          heading.textContent = level;
+          levelEl.appendChild(heading);
+
+          for (const g of levels[level].sort((a, b) => a.issue_number - b.issue_number)) {
+            const card = document.createElement('div');
+            card.className = 'guide-card';
+            card.innerHTML = `
+              <div class="guide-info">
+                <div class="guide-title">${escHtml(g.title)}</div>
+                <div class="guide-meta">Issue #${g.issue_number}</div>
+              </div>
+              <span class="badge ${badgeClass(g.subject_level)}">${escHtml(g.subject_level)}</span>
+              <a class="pdf-link" href="${g.pdf_url}" target="_blank" rel="noopener">View PDF ↗</a>
+            `;
+            levelEl.appendChild(card);
+          }
+          groupEl.appendChild(levelEl);
+        }
+        container.appendChild(groupEl);
+      }
+    } catch {
+      loadingEl.style.display = 'none';
+      errorEl.style.display = '';
+    }
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  loadGuides();
+</script>
+</body>
+</html>

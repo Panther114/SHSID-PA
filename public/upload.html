@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Guide – SHSID Peer Advisors</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #1a1a2e;
+      background: #f8f9fc;
+      line-height: 1.6;
+    }
+
+    nav {
+      background: #1a1a2e;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .nav-brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+    }
+    nav a { color: #cdd3f0; text-decoration: none; font-size: 0.95rem; }
+    nav a:hover { color: #fff; }
+
+    main {
+      max-width: 560px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+
+    h1 { font-size: 1.9rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .subtitle { color: #666; margin-bottom: 2rem; }
+
+    .form-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .form-group { margin-bottom: 1.25rem; }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.3rem;
+    }
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus {
+      outline: 2px solid #e94560;
+      border-color: transparent;
+    }
+
+    .file-input-wrap {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .file-input-wrap:hover, .file-input-wrap.drag-over {
+      border-color: #e94560;
+      background: #fff5f7;
+    }
+    .file-input-wrap input[type="file"] {
+      display: none;
+    }
+    .file-label-text { font-size: 0.9rem; color: #555; }
+    .file-label-text strong { color: #e94560; }
+    #file-name { font-size: 0.82rem; color: #888; margin-top: 0.4rem; }
+
+    .error-msg {
+      color: #c0392b;
+      background: #fdf0f0;
+      border: 1px solid #f5c6cb;
+      border-radius: 6px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .success-msg {
+      color: #155724;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 6px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .back-link { display: inline-block; margin-top: 1.25rem; color: #e94560; text-decoration: none; font-size: 0.9rem; }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">SHSID Peer Advisors</a>
+  <a href="guides.html">← Back to Guides</a>
+</nav>
+
+<main>
+  <h1>Upload Guide</h1>
+  <p class="subtitle">Share a new academic guide with the community.</p>
+
+  <div class="form-card">
+    <div class="error-msg" id="error-msg"></div>
+    <div class="success-msg" id="success-msg"></div>
+
+    <form id="upload-form" novalidate>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="e.g. Introduction to Calculus" required />
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="e.g. Mathematics" required />
+      </div>
+
+      <div class="form-group">
+        <label for="subject_level">Level</label>
+        <select id="subject_level" name="subject_level" required>
+          <option value="" disabled selected>Select a level</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="issue_number">Issue Number</label>
+        <input type="number" id="issue_number" name="issue_number" min="1" placeholder="1" required />
+      </div>
+
+      <div class="form-group">
+        <label>PDF File</label>
+        <div class="file-input-wrap" id="file-drop-zone">
+          <input type="file" id="pdf" name="pdf" accept=".pdf" required />
+          <div class="file-label-text">
+            <strong>Click to choose</strong> or drag &amp; drop a PDF
+          </div>
+          <div id="file-name">No file selected</div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">Upload Guide</button>
+    </form>
+  </div>
+
+  <a href="guides.html" class="back-link">← Back to all guides</a>
+</main>
+
+<script>
+  /* ---- Auth guard ---- */
+  function parseJwt(token) {
+    try {
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64));
+    } catch { return null; }
+  }
+
+  function isTokenValid(token) {
+    if (!token) return false;
+    const payload = parseJwt(token);
+    if (!payload || !payload.exp) return false;
+    return payload.exp * 1000 > Date.now();
+  }
+
+  const token = localStorage.getItem('jwt');
+  if (!isTokenValid(token)) {
+    window.location.href = 'guides.html';
+  }
+
+  /* ---- File input UX ---- */
+  const pdfInput = document.getElementById('pdf');
+  const fileNameEl = document.getElementById('file-name');
+  const dropZone = document.getElementById('file-drop-zone');
+
+  dropZone.addEventListener('click', () => pdfInput.click());
+  pdfInput.addEventListener('change', () => {
+    fileNameEl.textContent = pdfInput.files[0] ? pdfInput.files[0].name : 'No file selected';
+  });
+
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      pdfInput.files = dt.files;
+      fileNameEl.textContent = file.name;
+    } else {
+      showError('Only PDF files are accepted.');
+    }
+  });
+
+  /* ---- Form submission ---- */
+  const form = document.getElementById('upload-form');
+  const errorEl = document.getElementById('error-msg');
+  const successEl = document.getElementById('success-msg');
+  const submitBtn = document.getElementById('submit-btn');
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = '';
+    successEl.style.display = 'none';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.style.display = 'none';
+    successEl.style.display = 'none';
+
+    const title = document.getElementById('title').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const subject_level = document.getElementById('subject_level').value;
+    const issue_number = document.getElementById('issue_number').value;
+    const file = pdfInput.files[0];
+
+    if (!title || !subject || !subject_level || !issue_number || !file) {
+      showError('All fields are required.');
+      return;
+    }
+
+    // Re-check token validity before submitting
+    const jwt = localStorage.getItem('jwt');
+    if (!isTokenValid(jwt)) {
+      showError('Your session has expired. Please log in again.');
+      setTimeout(() => { window.location.href = 'guides.html'; }, 2000);
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append('title', title);
+    fd.append('subject', subject);
+    fd.append('subject_level', subject_level);
+    fd.append('issue_number', issue_number);
+    fd.append('pdf', file);
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Uploading…';
+
+    try {
+      const res = await fetch('/api/guides/upload', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${jwt}` },
+        body: fd,
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.error || 'Upload failed.');
+      } else {
+        successEl.textContent = `"${data.title}" uploaded successfully!`;
+        successEl.style.display = '';
+        form.reset();
+        fileNameEl.textContent = 'No file selected';
+      }
+    } catch {
+      showError('Network error. Please try again.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Upload Guide';
+    }
+  });
+</script>
+</body>
+</html>
