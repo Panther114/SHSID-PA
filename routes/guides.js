@@ -92,6 +92,9 @@ router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), asyn
   try {
     uploadedFilePath = resolveUploadPath(req.file.filename);
   } catch {
+    fs.unlink(path.join(uploadsDir, path.basename(req.file.filename)), (err) => {
+      if (err) console.error('Failed to clean up uploaded file:', err);
+    });
     return res.status(400).json({ error: 'Invalid file path' });
   }
 
@@ -140,7 +143,16 @@ router.get('/pdf/:filename', guidesLimiter, (req, res) => {
   const safeFilename = path.basename(filePath);
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename="${safeFilename}"`);
-  fs.createReadStream(filePath).pipe(res);
+  const stream = fs.createReadStream(filePath);
+  stream.on('error', (err) => {
+    console.error('Stream error serving PDF:', err);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Failed to read file' });
+    } else {
+      res.end();
+    }
+  });
+  stream.pipe(res);
 });
 
 module.exports = router;
