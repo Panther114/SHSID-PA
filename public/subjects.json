@@ -34,7 +34,7 @@
     },
     {
       "name": "Computer Science",
-      "levels": ["H", "S"]
+      "levels": ["Default"]
     },
     {
       "name": "Visual Arts",
@@ -42,11 +42,11 @@
     },
     {
       "name": "Music Appreciation",
-      "levels": ["H", "S"]
+      "levels": ["Default"]
     },
     {
       "name": "Theater",
-      "levels": ["H", "S"]
+      "levels": ["Default"]
     },
     {
       "name": "Geography",
