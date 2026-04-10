@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
   <!-- Prevent flash of wrong theme -->
-  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})()</script>
+  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');else if(t==='pink')document.documentElement.setAttribute('data-theme','pink');})()</script>
   <style>
     /* ── HERO ── */
     .hero {
@@ -52,6 +52,9 @@
     [data-theme="light"] .blob-1 { background: rgba(99,102,241,0.14); }
     [data-theme="light"] .blob-2 { background: rgba(37,99,235,0.1); }
     [data-theme="light"] .blob-3 { background: rgba(236,72,153,0.07); }
+    [data-theme="pink"] .blob-1 { background: rgba(240,98,146,0.22); }
+    [data-theme="pink"] .blob-2 { background: rgba(255,183,77,0.18); }
+    [data-theme="pink"] .blob-3 { background: rgba(252,228,236,0.3); }
 
     @keyframes drift1 {
       0%,100% { transform: translate(0,0) scale(1); }
@@ -89,6 +92,7 @@
       margin-bottom: 1.75rem;
     }
     [data-theme="light"] .hero-eyebrow { border-color: rgba(99,102,241,0.2); }
+    [data-theme="pink"] .hero-eyebrow { border-color: rgba(233,30,140,0.22); }
 
     .hero-eyebrow-dot {
       width: 5px; height: 5px;
@@ -112,6 +116,12 @@
     }
     [data-theme="light"] .grad-text {
       background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 60%, #4338ca 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    [data-theme="pink"] .grad-text {
+      background: linear-gradient(135deg, #e91e8c 0%, #f06292 50%, #f48fb1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -190,6 +200,7 @@
       margin-bottom: 1.1rem;
     }
     [data-theme="light"] .feature-icon-wrap { border-color: rgba(99,102,241,0.14); }
+    [data-theme="pink"] .feature-icon-wrap { border-color: rgba(233,30,140,0.18); }
     .feature-name {
       font-size: 1rem;
       font-weight: 700;
@@ -273,13 +284,15 @@
 
     /* ── Theme hook ── */
     function useTheme() {
-      const [theme, setTheme] = useState(() =>
-        localStorage.getItem('pa-theme') === 'light' ? 'light' : 'dark'
-      );
+      const [theme, setTheme] = useState(() => {
+        const t = localStorage.getItem('pa-theme');
+        return t === 'light' ? 'light' : t === 'pink' ? 'pink' : 'dark';
+      });
       const toggle = useCallback(() => {
-        const next = theme === 'dark' ? 'light' : 'dark';
+        const next = theme === 'dark' ? 'light' : theme === 'light' ? 'pink' : 'dark';
         setTheme(next);
         if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else if (next === 'pink') document.documentElement.setAttribute('data-theme', 'pink');
         else document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('pa-theme', next);
       }, [theme]);
@@ -299,7 +312,7 @@
             <a href="/guides.html" className="nav-link">Guides</a>
             <a href="#about" className="nav-link">About</a>
             <button className="theme-btn" onClick={onToggle} aria-label="Toggle theme" title="Toggle theme">
-              {theme === 'dark' ? '☀' : '◑'}
+              {theme === 'dark' ? '☀' : theme === 'light' ? '🌸' : '🌙'}
             </button>
           </div>
         </nav>

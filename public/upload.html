@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
-  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})()</script>
+  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');else if(t==='pink')document.documentElement.setAttribute('data-theme','pink');})()</script>
   <style>
     /* ── UPLOAD LAYOUT ── */
     .upload-page {
@@ -172,13 +172,15 @@
 
     /* ── Theme hook ── */
     function useTheme() {
-      const [theme, setTheme] = useState(() =>
-        localStorage.getItem('pa-theme') === 'light' ? 'light' : 'dark'
-      );
+      const [theme, setTheme] = useState(() => {
+        const t = localStorage.getItem('pa-theme');
+        return t === 'light' ? 'light' : t === 'pink' ? 'pink' : 'dark';
+      });
       const toggle = useCallback(() => {
-        const next = theme === 'dark' ? 'light' : 'dark';
+        const next = theme === 'dark' ? 'light' : theme === 'light' ? 'pink' : 'dark';
         setTheme(next);
         if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else if (next === 'pink') document.documentElement.setAttribute('data-theme', 'pink');
         else document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('pa-theme', next);
       }, [theme]);
@@ -197,7 +199,7 @@
           <div className="nav-actions">
             <a href="/guides.html" className="nav-link">← Guides</a>
             <button className="theme-btn" onClick={onToggle} aria-label="Toggle theme">
-              {theme === 'dark' ? '☀' : '◑'}
+              {theme === 'dark' ? '☀' : theme === 'light' ? '🌸' : '🌙'}
             </button>
           </div>
         </nav>
@@ -206,7 +208,7 @@
 
     /* ── Upload Form ── */
     function UploadForm({ token }) {
-      const [title,        setTitle]        = useState('');
+      const [subjects,     setSubjects]     = useState([]);
       const [subject,      setSubject]      = useState('');
       const [level,        setLevel]        = useState('');
       const [issueNumber,  setIssueNumber]  = useState('');
@@ -216,6 +218,23 @@
       const [error,        setError]        = useState('');
       const [success,      setSuccess]      = useState('');
       const fileInputRef = useRef(null);
+
+      useEffect(() => {
+        fetch('/subjects.json')
+          .then(r => r.json())
+          .then(data => setSubjects(data.subjects || []))
+          .catch(() => setError('Failed to load subjects list.'));
+      }, []);
+
+      const availableLevels = subjects.find(s => s.name === subject)?.levels || [];
+
+      // Reset level when subject changes
+      useEffect(() => { setLevel(''); }, [subject]);
+
+      // Auto-generated title
+      const autoTitle = subject && level && issueNumber
+        ? `${subject} ${level} Issue ${issueNumber}`
+        : '';
 
       const setFileFromDrop = useCallback((f) => {
         if (f && f.type === 'application/pdf') {
@@ -235,8 +254,12 @@
       const onSubmit = async e => {
         e.preventDefault();
         setError(''); setSuccess('');
-        if (!title || !subject || !level || !issueNumber || !file) {
+        if (!subject || !level || !issueNumber || !file) {
           setError('All fields are required.'); return;
+        }
+        const issueNum = parseInt(issueNumber, 10);
+        if (isNaN(issueNum) || issueNum < 1) {
+          setError('Issue number must be a positive integer.'); return;
         }
         if (!isTokenValid(token)) {
           setError('Your session has expired. Redirecting to guides…');
@@ -244,10 +267,10 @@
           return;
         }
         const fd = new FormData();
-        fd.append('title', title);
+        fd.append('title', autoTitle);
         fd.append('subject', subject);
         fd.append('subject_level', level);
-        fd.append('issue_number', issueNumber);
+        fd.append('issue_number', issueNum);
         fd.append('pdf', file);
 
         setSubmitting(true);
@@ -260,7 +283,7 @@
           const data = await res.json();
           if (!res.ok) { setError(data.error || 'Upload failed.'); return; }
           setSuccess(`"${data.title}" uploaded successfully!`);
-          setTitle(''); setSubject(''); setLevel(''); setIssueNumber(''); setFile(null);
+          setSubject(''); setLevel(''); setIssueNumber(''); setFile(null);
         } catch {
           setError('Network error. Please try again.');
         } finally {
@@ -273,62 +296,71 @@
           {error   && <div className="msg-error">{error}</div>}
           {success && <div className="msg-success">{success}</div>}
 
+          <div className="form-row">
+            <div className="form-field">
+              <label className="form-label" htmlFor="subject">Subject</label>
+              <select
+                id="subject"
+                className="form-select"
+                value={subject}
+                onChange={e => setSubject(e.target.value)}
+                required
+              >
+                <option value="" disabled>Select a subject</option>
+                {subjects.map(s => (
+                  <option key={s.name} value={s.name}>{s.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-field">
+              <label className="form-label" htmlFor="level">Level</label>
+              <select
+                id="level"
+                className="form-select"
+                value={level}
+                onChange={e => setLevel(e.target.value)}
+                required
+                disabled={!subject}
+              >
+                <option value="" disabled>
+                  {subject ? 'Select a level' : 'Select subject first'}
+                </option>
+                {availableLevels.map(l => (
+                  <option key={l} value={l}>{l}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div className="form-field">
-            <label className="form-label" htmlFor="title">Title</label>
+            <label className="form-label" htmlFor="issue-number">Issue Number</label>
             <input
-              id="title"
+              id="issue-number"
               className="form-input"
-              type="text"
-              placeholder="e.g. Introduction to Calculus"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
+              type="number"
+              min="1"
+              step="1"
+              placeholder="e.g. 4"
+              value={issueNumber}
+              onChange={e => setIssueNumber(e.target.value)}
               required
             />
           </div>
 
-          <div className="form-row">
+          {autoTitle && (
             <div className="form-field">
-              <label className="form-label" htmlFor="subject">Subject</label>
-              <input
-                id="subject"
-                className="form-input"
-                type="text"
-                placeholder="e.g. Mathematics"
-                value={subject}
-                onChange={e => setSubject(e.target.value)}
-                required
-              />
+              <div className="form-label">Guide Name (auto-generated)</div>
+              <div style={{
+                padding: '0.65rem 0.85rem',
+                background: 'var(--c-accent-bg)',
+                border: '1px solid var(--c-border2)',
+                borderRadius: '9px',
+                color: 'var(--c-text)',
+                fontSize: '0.9rem',
+                fontWeight: 600,
+              }}>{autoTitle}</div>
             </div>
-            <div className="form-field">
-              <label className="form-label" htmlFor="issue-number">Issue #</label>
-              <input
-                id="issue-number"
-                className="form-input"
-                type="number"
-                min="1"
-                placeholder="1"
-                value={issueNumber}
-                onChange={e => setIssueNumber(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-field">
-            <label className="form-label" htmlFor="level">Level</label>
-            <select
-              id="level"
-              className="form-select"
-              value={level}
-              onChange={e => setLevel(e.target.value)}
-              required
-            >
-              <option value="" disabled>Select a level</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
-          </div>
+          )}
 
           <div className="form-field">
             <label className="form-label">PDF File</label>
