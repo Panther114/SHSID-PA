@@ -242,6 +242,27 @@
       color: #fff;
       border-color: var(--c-accent);
     }
+    .remove-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 7px;
+      background: var(--c-red-bg);
+      color: var(--c-red);
+      font-size: 0.73rem;
+      font-weight: 600;
+      border: 1px solid rgba(239,68,68,0.2);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .remove-btn:hover {
+      background: #ef4444;
+      color: #fff;
+      border-color: #ef4444;
+    }
 
     /* ── STATES ── */
     .state-msg {
@@ -542,13 +563,53 @@
     }
 
     /* ── Guide Card ── */
-    function GuideCard({ guide }) {
+    function GuideCard({ guide, authed, token, onRemove }) {
+      const [confirming, setConfirming] = useState(false);
+      const [removing,   setRemoving]   = useState(false);
+
+      const handleRemove = async () => {
+        setRemoving(true);
+        try {
+          const res = await fetch(`/api/guides/${guide.id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` },
+          });
+          if (res.ok) {
+            onRemove(guide.id);
+          } else {
+            const data = await res.json().catch(() => ({}));
+            alert(data.error || 'Failed to remove guide.');
+          }
+        } catch {
+          alert('Network error. Please try again.');
+        } finally {
+          setRemoving(false);
+          setConfirming(false);
+        }
+      };
+
       return (
         <div className="guide-card">
           <div className="guide-info">
             <div className="guide-title">{guide.title}</div>
           </div>
           <div className="guide-actions">
+            {authed && !confirming && (
+              <button className="remove-btn" onClick={() => setConfirming(true)}>
+                Remove
+              </button>
+            )}
+            {authed && confirming && (
+              <>
+                <button className="remove-btn" onClick={handleRemove} disabled={removing}>
+                  {removing ? 'Removing…' : 'Confirm'}
+                </button>
+                <button className="remove-btn" onClick={() => setConfirming(false)} disabled={removing}
+                  style={{background:'var(--c-surface)', color:'var(--c-text2)', borderColor:'var(--c-border)'}}>
+                  Cancel
+                </button>
+              </>
+            )}
             <a className="pdf-btn" href={guide.pdf_url} target="_blank" rel="noopener noreferrer">
               View PDF ↗
             </a>
@@ -558,7 +619,7 @@
     }
 
     /* ── Issue Tab (accordion item) ── */
-    function IssueTab({ issueNumber, guides, subjects, search }) {
+    function IssueTab({ issueNumber, guides, subjects, search, authed, token, onRemove }) {
       const [open, setOpen] = useState(false);
 
       const filteredGuides = useMemo(() => {
@@ -612,7 +673,7 @@
                               fontStyle: 'italic',
                             }}>No guide available</div>
                           ) : (
-                            levelGuides.map(g => <GuideCard key={g.id} guide={g} />)
+                            levelGuides.map(g => <GuideCard key={g.id} guide={g} authed={authed} token={token} onRemove={onRemove} />)
                           )}
                         </div>
                       );
@@ -627,7 +688,7 @@
     }
 
     /* ── Guide List ── */
-    function GuidesList({ guides, subjects, search }) {
+    function GuidesList({ guides, subjects, search, authed, token, onRemove }) {
       // Group guides by issue number
       const byIssue = useMemo(() => {
         const idx = {};
@@ -663,6 +724,9 @@
               guides={byIssue[issue]}
               subjects={subjects}
               search={search}
+              authed={authed}
+              token={token}
+              onRemove={onRemove}
             />
           ))}
         </div>
@@ -673,7 +737,8 @@
     function Footer() {
       return (
         <footer>
-          <div>© 2026 JL SHSID PA</div>
+          <div>2026 SHSID PA</div>
+          <div style={{marginTop:'0.25rem', fontSize:'0.8rem', opacity:0.7}}>Site by Gavania</div>
           <div style={{marginTop:'0.4rem', fontSize:'0.8rem', opacity:0.7}}>
             Guides are licensed under{' '}
             <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"
@@ -695,7 +760,7 @@
     /* ── App ── */
     function App() {
       const { theme, toggle } = useTheme();
-      const { authed, login } = useAuth();
+      const { token, authed, login } = useAuth();
 
       const [guides,    setGuides]    = useState([]);
       const [subjects,  setSubjects]  = useState([]);
@@ -722,6 +787,10 @@
             setLoading(false);
           }
         })();
+      }, []);
+
+      const removeGuide = useCallback(id => {
+        setGuides(prev => prev.filter(g => g.id !== id));
       }, []);
 
       // When search changes, filter guides (pass all to GuidesList which filters per issue)
@@ -780,7 +849,7 @@
             </div>
           )}
           {!loading && !error && guides.length > 0 && (
-            <GuidesList guides={filteredGuides} subjects={subjects} search={search} />
+            <GuidesList guides={filteredGuides} subjects={subjects} search={search} authed={authed} token={token} onRemove={removeGuide} />
           )}
 
           <Footer />

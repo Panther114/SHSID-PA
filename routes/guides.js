@@ -127,6 +127,40 @@ router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), asyn
   }
 });
 
+// DELETE /api/guides/:id  (protected)
+router.delete('/:id', guidesLimiter, authMiddleware, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id) || id < 1) {
+    return res.status(400).json({ error: 'Invalid guide id' });
+  }
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM guides WHERE id = $1 RETURNING filename',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Guide not found' });
+    }
+
+    const { filename } = result.rows[0];
+    try {
+      const filePath = resolveUploadPath(filename);
+      fs.unlink(filePath, (err) => {
+        if (err) console.error('Failed to delete guide file:', err);
+      });
+    } catch (err) {
+      console.error('Could not resolve path for deletion:', err);
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('DELETE /api/guides/:id error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // GET /api/guides/pdf/:filename  — serve PDF
 router.get('/pdf/:filename', guidesLimiter, (req, res) => {
   let filePath;
