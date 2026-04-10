@@ -7,456 +7,669 @@
   <link rel="icon" type="image/png" href="/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
-  <script>
-    (function(){
-      var t = localStorage.getItem('pa-theme');
-      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
-      else if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
-    })();
-  </script>
+  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})()</script>
   <style>
-    /* ── MAIN ── */
-    main { max-width: 980px; margin: 2.5rem auto; padding: 0 1.5rem; }
-    main h1 {
-      font-size: 2.2rem;
-      font-weight: 900;
-      margin-bottom: 0.3rem;
-      color: var(--text-primary);
-      letter-spacing: -0.6px;
+    /* ── PAGE HEADER ── */
+    .page-header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 1.5rem;
     }
-    .subtitle { color: var(--text-secondary); margin-bottom: 2.5rem; font-size: 0.97rem; }
+    .page-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--c-text);
+      margin-bottom: 0.3rem;
+    }
+    .page-header p {
+      color: var(--c-text2);
+      font-size: 0.95rem;
+    }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--c-text3);
+      pointer-events: none;
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+    .search-input {
+      width: 100%;
+      padding: 0.62rem 0.85rem 0.62rem 2.2rem;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 9px;
+      color: var(--c-text);
+      font-size: 0.875rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 3px var(--c-accent-bg);
+    }
+    .search-input::placeholder { color: var(--input-placeholder); }
+
+    .filter-chip {
+      padding: 0.42rem 0.85rem;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 1px solid var(--c-border);
+      background: var(--c-surface);
+      color: var(--c-text2);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .filter-chip:hover,
+    .filter-chip.active {
+      background: var(--c-accent-bg);
+      border-color: rgba(139,92,246,0.3);
+      color: var(--c-accent2);
+    }
+    [data-theme="light"] .filter-chip:hover,
+    [data-theme="light"] .filter-chip.active {
+      border-color: rgba(99,102,241,0.25);
+    }
+
+    /* ── GUIDES CONTENT ── */
+    .guides-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.75rem 2rem 2rem;
+    }
 
     /* ── SUBJECT GROUP ── */
-    .subject-group { margin-bottom: 3.5rem; }
-    .subject-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.4px;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.4rem;
-      border-bottom: 2px solid transparent;
-      border-image: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 60%, transparent 100%) 1;
+    .subject-group { margin-bottom: 2.75rem; }
+    .subject-heading {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--c-text);
+      padding-bottom: 0.65rem;
+      margin-bottom: 0.85rem;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .subject-heading::before {
+      content: '';
+      width: 3px;
+      height: 1em;
+      background: var(--c-accent);
+      border-radius: 99px;
+      flex-shrink: 0;
     }
 
     /* ── LEVEL GROUP ── */
-    .level-group { margin-bottom: 1.75rem; }
-    .level-heading {
-      font-size: 0.72rem;
+    .level-group { margin-bottom: 1rem; }
+    .level-label {
+      font-size: 0.67rem;
       font-weight: 700;
-      letter-spacing: 1.4px;
       text-transform: uppercase;
-      color: var(--level-color);
-      margin-bottom: 0.7rem;
-      opacity: 0.85;
+      letter-spacing: 0.1em;
+      color: var(--c-text3);
+      margin-bottom: 0.45rem;
+      padding: 0 0.2rem;
     }
 
     /* ── GUIDE CARD ── */
     .guide-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 12px;
-      padding: 1rem 1.35rem;
-      margin-bottom: 0.6rem;
-      box-shadow: var(--card-shadow);
-      border: 1px solid var(--card-border);
-      border-left: 3px solid var(--card-accent);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s ease;
+      gap: 0.9rem;
+      padding: 0.8rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      margin-bottom: 0.35rem;
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
     }
     .guide-card:hover {
-      box-shadow: var(--card-shadow-hover);
-      transform: translateY(-2px);
+      background: var(--card-hover-bg);
+      border-color: var(--card-hover-border);
+      transform: translateX(3px);
     }
     .guide-info { flex: 1; min-width: 0; }
     .guide-title {
+      font-size: 0.88rem;
       font-weight: 600;
-      font-size: 0.97rem;
+      color: var(--c-text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: var(--text-primary);
-      letter-spacing: -0.1px;
+      letter-spacing: -0.01em;
     }
-    .guide-meta { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.18rem; }
-
-    /* ── BADGES ── */
-    .badge {
+    .guide-meta {
+      font-size: 0.73rem;
+      color: var(--c-text3);
+      margin-top: 0.12rem;
+    }
+    .guide-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+    .pdf-btn {
       display: inline-flex;
       align-items: center;
-      padding: 0.22rem 0.7rem;
-      border-radius: 50px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .badge-beginner    { background: var(--badge-bg-beginner);    color: var(--badge-text-beginner); }
-    .badge-intermediate{ background: var(--badge-bg-intermediate); color: var(--badge-text-intermediate); }
-    .badge-advanced    { background: var(--badge-bg-advanced);    color: var(--badge-text-advanced); }
-    .badge-default     { background: rgba(128,128,128,0.15);      color: var(--text-secondary); }
-
-    /* ── PDF LINK ── */
-    .pdf-link {
-      color: var(--pdf-link);
+      gap: 0.28rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 7px;
+      background: var(--c-accent-bg);
+      color: var(--c-accent2);
+      font-size: 0.73rem;
+      font-weight: 600;
       text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 700;
+      border: 1px solid rgba(139,92,246,0.16);
+      transition: all 0.15s;
       white-space: nowrap;
-      flex-shrink: 0;
-      padding: 0.28rem 0.72rem;
-      border-radius: 50px;
-      background: var(--pdf-link-bg);
-      border: 1px solid transparent;
-      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .pdf-link:hover {
-      background: var(--pdf-link-hover-bg);
-      transform: translateY(-1px);
+    .pdf-btn:hover {
+      background: var(--c-accent);
+      color: #fff;
+      border-color: var(--c-accent);
     }
 
-    /* ── LOADING / ERROR ── */
-    #loading { text-align: center; color: var(--text-secondary); padding: 4rem; font-size: 0.95rem; }
-    #error-msg { color: #e11d48; text-align: center; padding: 2rem; display: none; }
+    /* ── STATES ── */
+    .state-msg {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--c-text2);
+      font-size: 0.95rem;
+    }
+    .state-msg-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--c-text);
+      margin-bottom: 0.35rem;
+    }
+    .error-banner {
+      background: var(--c-red-bg);
+      border: 1px solid rgba(239,68,68,0.2);
+      color: var(--c-red);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── SKELETON ── */
+    .skel-group { margin-bottom: 2.5rem; }
+    .skel-heading {
+      height: 20px; width: 140px;
+      background: var(--c-surface2);
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    .skel-card {
+      height: 54px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      margin-bottom: 0.35rem;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
 
     /* ── MODAL ── */
     .modal-overlay {
-      display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      z-index: 300;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--modal-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-radius: 20px;
-      padding: 2.2rem;
-      width: min(420px, 93vw);
-      box-shadow: var(--modal-shadow);
-      border: 1px solid var(--modal-border);
-      position: relative;
-      animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.9) translateY(12px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    .modal h2 {
-      margin-bottom: 1.5rem;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.3px;
-    }
-    .modal label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-      margin-bottom: 0.3rem;
-      color: var(--text-secondary);
-    }
-    .modal input {
-      width: 100%;
-      padding: 0.65rem 0.9rem;
-      border: 1px solid var(--modal-input-border);
-      border-radius: 10px;
-      font-size: 0.95rem;
-      margin-bottom: 1.1rem;
-      background: var(--input-bg);
-      color: var(--text-primary);
-      font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .modal input:focus {
-      outline: none;
-      border-color: var(--modal-input-focus);
-      box-shadow: var(--input-focus-shadow);
-    }
-    .modal-error {
-      color: #e11d48;
-      font-size: 0.84rem;
-      margin-bottom: 0.9rem;
-      display: none;
-      padding: 0.5rem 0.75rem;
-      background: rgba(225, 29, 72, 0.08);
-      border-radius: 8px;
-    }
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1.1rem;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      padding: 1rem;
+      animation: fadeIn 0.18s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: var(--modal-bg);
+      border: 1px solid var(--c-border2);
+      border-radius: 20px;
+      padding: 2rem;
+      width: min(440px, 100%);
+      box-shadow: var(--modal-shadow);
+      animation: slideUp 0.24s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(18px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      border: 1px solid var(--c-border);
+      background: var(--c-surface);
+      color: var(--c-text2);
       cursor: pointer;
-      background: rgba(128,128,128,0.1);
-      border: none;
-      color: var(--text-secondary);
-      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.15s;
       line-height: 1;
     }
     .modal-close:hover {
-      background: rgba(128,128,128,0.2);
-      color: var(--text-primary);
+      background: var(--c-surface2);
+      color: var(--c-text);
     }
-    #login-submit {
-      width: 100%;
-      padding: 0.75rem;
-      background: linear-gradient(135deg, var(--btn-grad-from) 0%, var(--btn-grad-to) 100%);
-      color: var(--btn-text);
-      border: none;
-      border-radius: 50px;
-      font-size: 0.97rem;
+    .modal-title {
+      font-size: 1.2rem;
       font-weight: 700;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--btn-shadow);
+      letter-spacing: -0.03em;
+      color: var(--c-text);
+      margin-bottom: 1.5rem;
     }
-    #login-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px var(--accent-glow);
-      filter: brightness(1.06);
+    .form-field { margin-bottom: 0.9rem; }
+    .form-error {
+      color: var(--c-red);
+      background: var(--c-red-bg);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px;
+      padding: 0.55rem 0.8rem;
+      font-size: 0.82rem;
+      margin-bottom: 1rem;
     }
 
     @media (max-width: 540px) {
-      .guide-card { flex-wrap: wrap; gap: 0.6rem; }
+      .guide-card { flex-wrap: wrap; }
       .guide-title { white-space: normal; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .page-header { padding: 2.5rem 1.25rem 1rem; }
+      .toolbar { padding: 0.75rem 1.25rem; }
+      .guides-content { padding: 0.5rem 1.25rem 2rem; }
     }
   </style>
 </head>
 <body>
+  <div id="root"></div>
 
-<nav>
-  <a class="nav-left" href="index.html">
-    <img class="nav-icon" src="/icon.png" alt="SHSID PA icon" />
-    <span class="nav-brand">SHSID Peer Advisors</span>
-  </a>
-  <div class="nav-right">
-    <a href="index.html">Home</a>
-    <span id="upload-link-wrap" style="display:none">
-      <a href="upload.html" class="btn btn-primary">Upload Guide</a>
-    </span>
-    <button id="login-btn" class="btn btn-outline">Login</button>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-      <span class="theme-dot"></span><span class="toggle-label">Pink</span>
-    </button>
-  </div>
-</nav>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<!-- Login Modal -->
-<div class="modal-overlay" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal">
-    <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
-    <h2 id="modal-title">Admin Login</h2>
-    <div class="modal-error" id="login-error"></div>
-    <label for="login-email">Account Name</label>
-    <input type="email" id="login-email" autocomplete="email" placeholder="your-account@example.com" />
-    <label for="login-password">Password</label>
-    <input type="password" id="login-password" autocomplete="current-password" placeholder="Password" />
-    <button id="login-submit">Sign In</button>
-  </div>
-</div>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useMemo } = React;
+    const { createRoot } = ReactDOM;
 
-<main>
-  <h1>Academic Guides</h1>
-  <p class="subtitle">Browse peer-written study guides, organized by subject and level.</p>
-
-  <div id="loading">Loading guides…</div>
-  <div id="error-msg">Failed to load guides. Please try again later.</div>
-  <div id="guides-container"></div>
-</main>
-
-<script>
-  /* ---- JWT helpers ---- */
-  function parseJwt(token) {
-    try {
-      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-      return JSON.parse(atob(base64));
-    } catch { return null; }
-  }
-
-  function isTokenValid(token) {
-    if (!token) return false;
-    const payload = parseJwt(token);
-    if (!payload || !payload.exp) return false;
-    return payload.exp * 1000 > Date.now();
-  }
-
-  /* ---- Auth UI ---- */
-  const token = localStorage.getItem('jwt');
-  const loginBtn = document.getElementById('login-btn');
-  const uploadWrap = document.getElementById('upload-link-wrap');
-
-  if (isTokenValid(token)) {
-    loginBtn.style.display = 'none';
-    uploadWrap.style.display = '';
-  }
-
-  /* Modal */
-  const modal = document.getElementById('login-modal');
-  loginBtn.addEventListener('click', () => modal.classList.add('open'));
-  document.getElementById('modal-close-btn').addEventListener('click', () => modal.classList.remove('open'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-
-  document.getElementById('login-submit').addEventListener('click', async () => {
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-    const errorEl = document.getElementById('login-error');
-    errorEl.style.display = 'none';
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) { errorEl.textContent = data.error || 'Login failed'; errorEl.style.display = ''; return; }
-      localStorage.setItem('jwt', data.token);
-      modal.classList.remove('open');
-      loginBtn.style.display = 'none';
-      uploadWrap.style.display = '';
-    } catch {
-      errorEl.textContent = 'Network error. Please try again.';
-      errorEl.style.display = '';
+    /* ── Helpers ── */
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
-  });
 
-  /* ---- Load Guides ---- */
-  function badgeClass(level) {
-    const map = { beginner: 'badge-beginner', intermediate: 'badge-intermediate', advanced: 'badge-advanced' };
-    return map[level.toLowerCase()] || 'badge-default';
-  }
+    function parseJwt(token) {
+      try {
+        const b64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+        return JSON.parse(atob(b64));
+      } catch { return null; }
+    }
+    function isTokenValid(token) {
+      if (!token) return false;
+      const p = parseJwt(token);
+      return p && p.exp && p.exp * 1000 > Date.now();
+    }
+    function badgeClass(level) {
+      const m = { beginner:'badge-beginner', intermediate:'badge-intermediate', advanced:'badge-advanced' };
+      return m[(level||'').toLowerCase()] || 'badge-default';
+    }
 
-  async function loadGuides() {
-    const loadingEl = document.getElementById('loading');
-    const errorEl = document.getElementById('error-msg');
-    const container = document.getElementById('guides-container');
+    /* ── Theme hook ── */
+    function useTheme() {
+      const [theme, setTheme] = useState(() =>
+        localStorage.getItem('pa-theme') === 'light' ? 'light' : 'dark'
+      );
+      const toggle = useCallback(() => {
+        const next = theme === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('pa-theme', next);
+      }, [theme]);
+      return { theme, toggle };
+    }
 
-    try {
-      const res = await fetch('/api/guides');
-      if (!res.ok) throw new Error('Bad response');
-      const guides = await res.json();
-      loadingEl.style.display = 'none';
+    /* ── Auth hook ── */
+    function useAuth() {
+      const [token, setToken] = useState(() => localStorage.getItem('jwt'));
+      const authed = isTokenValid(token);
+      const login = useCallback(tok => {
+        localStorage.setItem('jwt', tok);
+        setToken(tok);
+      }, []);
+      return { token, authed, login };
+    }
 
-      if (guides.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:2rem;">No guides uploaded yet.</p>';
-        return;
+    /* ── Nav ── */
+    function Nav({ authed, theme, onToggle, onLoginClick }) {
+      return (
+        <nav>
+          <a href="/index.html" className="nav-logo">
+            <img src="/icon.png" alt="PA" className="nav-icon-img" />
+            <span className="nav-brand">SHSID Peer Advisors</span>
+          </a>
+          <div className="nav-spacer" />
+          <div className="nav-actions">
+            <a href="/index.html" className="nav-link">Home</a>
+            {authed ? (
+              <a href="/upload.html" className="btn btn-primary" style={{marginRight:'0.2rem'}}>
+                Upload Guide
+              </a>
+            ) : (
+              <button className="btn btn-ghost" onClick={onLoginClick}>
+                Login
+              </button>
+            )}
+            <button className="theme-btn" onClick={onToggle} aria-label="Toggle theme">
+              {theme === 'dark' ? '☀' : '◑'}
+            </button>
+          </div>
+        </nav>
+      );
+    }
+
+    /* ── Login Modal ── */
+    function LoginModal({ onClose, onSuccess }) {
+      const [email, setEmail]     = useState('');
+      const [password, setPassword] = useState('');
+      const [error, setError]     = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const submit = async () => {
+        setError('');
+        if (!email || !password) { setError('Email and password are required.'); return; }
+        setLoading(true);
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) { setError(data.error || 'Login failed.'); return; }
+          onSuccess(data.token);
+          onClose();
+        } catch {
+          setError('Network error. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const onKey = e => { if (e.key === 'Enter') submit(); };
+
+      return (
+        <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
+            <h2 className="modal-title" id="modal-title">Admin Login</h2>
+            {error && <div className="form-error">{error}</div>}
+            <div className="form-field">
+              <label className="form-label" htmlFor="login-email">Email</label>
+              <input
+                id="login-email"
+                className="form-input"
+                type="email"
+                autoComplete="email"
+                placeholder="your-account@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                onKeyDown={onKey}
+              />
+            </div>
+            <div className="form-field" style={{marginBottom:'1.25rem'}}>
+              <label className="form-label" htmlFor="login-password">Password</label>
+              <input
+                id="login-password"
+                className="form-input"
+                type="password"
+                autoComplete="current-password"
+                placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                onKeyDown={onKey}
+              />
+            </div>
+            <button className="full-btn" onClick={submit} disabled={loading}>
+              {loading ? 'Signing in…' : 'Sign In'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Skeleton loader ── */
+    function SkeletonLoader() {
+      return (
+        <div className="guides-content">
+          {[1,2].map(i => (
+            <div key={i} className="skel-group">
+              <div className="skel-heading" />
+              {[1,2,3].map(j => <div key={j} className="skel-card" />)}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    /* ── Guide Card ── */
+    function GuideCard({ guide }) {
+      return (
+        <div className="guide-card">
+          <div className="guide-info">
+            <div className="guide-title">{guide.title}</div>
+            <div className="guide-meta">Issue #{guide.issue_number}</div>
+          </div>
+          <div className="guide-actions">
+            <span className={`badge ${badgeClass(guide.subject_level)}`}>{guide.subject_level}</span>
+            <a className="pdf-btn" href={guide.pdf_url} target="_blank" rel="noopener noreferrer">
+              View PDF ↗
+            </a>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Guide List ── */
+    function GuidesList({ guides, search, levelFilter }) {
+      const LEVEL_ORDER = ['Beginner', 'Intermediate', 'Advanced'];
+
+      const filtered = useMemo(() => {
+        let g = guides;
+        if (search.trim()) {
+          const q = search.trim().toLowerCase();
+          g = g.filter(x =>
+            x.title.toLowerCase().includes(q) ||
+            x.subject.toLowerCase().includes(q)
+          );
+        }
+        if (levelFilter !== 'All') {
+          g = g.filter(x => x.subject_level.toLowerCase() === levelFilter.toLowerCase());
+        }
+        return g;
+      }, [guides, search, levelFilter]);
+
+      if (filtered.length === 0) {
+        return (
+          <div className="guides-content">
+            <div className="state-msg">
+              <div className="state-msg-title">No guides found</div>
+              <div>Try adjusting your search or filter.</div>
+            </div>
+          </div>
+        );
       }
 
       // Group by subject
       const bySubject = {};
-      for (const g of guides) {
-        (bySubject[g.subject] = bySubject[g.subject] || {})[g.subject_level] =
-          (bySubject[g.subject][g.subject_level] || []).concat(g);
+      for (const g of filtered) {
+        if (!bySubject[g.subject]) bySubject[g.subject] = {};
+        if (!bySubject[g.subject][g.subject_level]) bySubject[g.subject][g.subject_level] = [];
+        bySubject[g.subject][g.subject_level].push(g);
       }
 
-      const levelOrder = ['Beginner', 'Intermediate', 'Advanced'];
-
-      for (const subject of Object.keys(bySubject).sort()) {
-        const levels = bySubject[subject];
-        const groupEl = document.createElement('div');
-        groupEl.className = 'subject-group';
-
-        const titleEl = document.createElement('h2');
-        titleEl.className = 'subject-title';
-        titleEl.textContent = subject;
-        groupEl.appendChild(titleEl);
-
-        const sortedLevels = [...new Set([...levelOrder, ...Object.keys(levels)])].filter(l => levels[l]);
-        for (const level of sortedLevels) {
-          const levelEl = document.createElement('div');
-          levelEl.className = 'level-group';
-
-          const heading = document.createElement('div');
-          heading.className = 'level-heading';
-          heading.textContent = level;
-          levelEl.appendChild(heading);
-
-          for (const g of levels[level].sort((a, b) => a.issue_number - b.issue_number)) {
-            const card = document.createElement('div');
-            card.className = 'guide-card';
-            card.innerHTML = `
-              <div class="guide-info">
-                <div class="guide-title">${escHtml(g.title)}</div>
-                <div class="guide-meta">Issue #${g.issue_number}</div>
+      return (
+        <div className="guides-content">
+          {Object.keys(bySubject).sort().map(subject => {
+            const levels = bySubject[subject];
+            const sortedLevels = [...new Set([...LEVEL_ORDER, ...Object.keys(levels)])].filter(l => levels[l]);
+            return (
+              <div key={subject} className="subject-group">
+                <h2 className="subject-heading">{subject}</h2>
+                {sortedLevels.map(level => (
+                  <div key={level} className="level-group">
+                    <div className="level-label">{level}</div>
+                    {levels[level]
+                      .slice()
+                      .sort((a,b) => a.issue_number - b.issue_number)
+                      .map(g => <GuideCard key={g.id} guide={g} />)
+                    }
+                  </div>
+                ))}
               </div>
-              <span class="badge ${badgeClass(g.subject_level)}">${escHtml(g.subject_level)}</span>
-              <a class="pdf-link" href="${g.pdf_url}" target="_blank" rel="noopener">View PDF ↗</a>
-            `;
-            levelEl.appendChild(card);
-          }
-          groupEl.appendChild(levelEl);
-        }
-        container.appendChild(groupEl);
-      }
-    } catch {
-      loadingEl.style.display = 'none';
-      errorEl.style.display = '';
+            );
+          })}
+        </div>
+      );
     }
-  }
 
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+    /* ── Footer ── */
+    function Footer() {
+      return <footer>© 2024 SHSID Peer Advisors · All rights reserved</footer>;
+    }
 
-  loadGuides();
+    /* ── App ── */
+    function App() {
+      const { theme, toggle } = useTheme();
+      const { authed, login } = useAuth();
 
-  /* ── Theme toggle ── */
-  const THEMES = ['pink', 'light', 'dark'];
-  const LABELS = { pink: 'Pink', light: 'Light', dark: 'Dark' };
-  const toggleBtn = document.getElementById('theme-toggle');
+      const [guides,      setGuides]      = useState([]);
+      const [loading,     setLoading]     = useState(true);
+      const [error,       setError]       = useState('');
+      const [showModal,   setShowModal]   = useState(false);
+      const [search,      setSearch]      = useState('');
+      const [levelFilter, setLevelFilter] = useState('All');
 
-  function getTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'pink';
-  }
+      useEffect(() => {
+        (async () => {
+          try {
+            const res = await fetch('/api/guides');
+            if (!res.ok) throw new Error('Failed');
+            setGuides(await res.json());
+          } catch {
+            setError('Failed to load guides. Please try again later.');
+          } finally {
+            setLoading(false);
+          }
+        })();
+      }, []);
 
-  function applyTheme(t) {
-    if (t === 'pink') document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.setAttribute('data-theme', t);
-    localStorage.setItem('pa-theme', t);
-    syncToggle(t);
-  }
+      const LEVELS = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 
-  function syncToggle(t) {
-    t = t || getTheme();
-    toggleBtn.innerHTML = `<span class="theme-dot"></span><span class="toggle-label">${LABELS[t]}</span>`;
-  }
+      return (
+        <>
+          <Nav
+            authed={authed}
+            theme={theme}
+            onToggle={toggle}
+            onLoginClick={() => setShowModal(true)}
+          />
 
-  syncToggle();
+          {showModal && !authed && (
+            <LoginModal onClose={() => setShowModal(false)} onSuccess={login} />
+          )}
 
-  toggleBtn.addEventListener('click', () => {
-    const next = THEMES[(THEMES.indexOf(getTheme()) + 1) % THEMES.length];
-    applyTheme(next);
-  });
-</script>
+          <div className="page-header">
+            <h1>Academic Guides</h1>
+            <p>Peer-written study guides, organized by subject and level.</p>
+          </div>
 
-<footer>
-  &copy; 2024 SHSID Peer Advisors &middot; All rights reserved
-</footer>
+          <div className="toolbar">
+            <div className="search-wrap">
+              <span className="search-icon">⌕</span>
+              <input
+                className="search-input"
+                type="search"
+                placeholder="Search guides or subjects…"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                aria-label="Search guides"
+              />
+            </div>
+            {LEVELS.map(l => (
+              <button
+                key={l}
+                className={`filter-chip${levelFilter === l ? ' active' : ''}`}
+                onClick={() => setLevelFilter(l)}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
 
+          {loading && <SkeletonLoader />}
+          {!loading && error && (
+            <div className="guides-content">
+              <div className="error-banner">{error}</div>
+            </div>
+          )}
+          {!loading && !error && guides.length === 0 && (
+            <div className="state-msg">
+              <div className="state-msg-title">No guides yet</div>
+              <div>Check back soon — new guides are added regularly.</div>
+            </div>
+          )}
+          {!loading && !error && guides.length > 0 && (
+            <GuidesList guides={guides} search={search} levelFilter={levelFilter} />
+          )}
+
+          <Footer />
+        </>
+      );
+    }
+
+    createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 </html>
