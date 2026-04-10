@@ -5,10 +5,6 @@ const bcrypt = require('bcrypt');
 const pool = require('../db');
 
 const SEED_USERS = [
-  {
-    email: process.env.SEED_EMAIL || 'admin@example.com',
-    password: process.env.SEED_PASSWORD || 'changeme',
-  },
   { email: process.env.FURINA_ACCOUNT || 'Furina',  password: process.env.FURINA_PASSWORD || 'Gavania114514' },
   { email: process.env.ADMIN_ACCOUNT  || 'admin',   password: process.env.ADMIN_PASSWORD  || 'shsidpeeradvisor' },
 ];
