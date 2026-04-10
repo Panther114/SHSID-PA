@@ -31,6 +31,16 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+// Resolve a filename to a canonical path strictly within uploadsDir
+function resolveUploadPath(filename) {
+  const base = path.resolve(uploadsDir);
+  const resolved = path.resolve(base, path.basename(filename));
+  if (!resolved.startsWith(base + path.sep)) {
+    throw new Error('Invalid filename');
+  }
+  return resolved;
+}
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadsDir),
   filename: (_req, file, cb) => {
@@ -78,15 +88,22 @@ router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), asyn
     return res.status(400).json({ error: 'PDF file is required' });
   }
 
+  let uploadedFilePath;
+  try {
+    uploadedFilePath = resolveUploadPath(req.file.filename);
+  } catch {
+    return res.status(400).json({ error: 'Invalid file path' });
+  }
+
   const { title, subject, subject_level, issue_number } = req.body;
   if (!title || !subject || !subject_level || !issue_number) {
-    fs.unlink(path.join(uploadsDir, req.file.filename), () => {});
+    fs.unlink(uploadedFilePath, () => {});
     return res.status(400).json({ error: 'title, subject, subject_level, and issue_number are required' });
   }
 
   const issueNum = parseInt(issue_number, 10);
   if (isNaN(issueNum) || issueNum < 1) {
-    fs.unlink(path.join(uploadsDir, req.file.filename), () => {});
+    fs.unlink(uploadedFilePath, () => {});
     return res.status(400).json({ error: 'issue_number must be a positive integer' });
   }
 
@@ -101,7 +118,7 @@ router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), asyn
     const guide = result.rows[0];
     res.status(201).json({ ...guide, pdf_url: `/api/guides/pdf/${guide.filename}` });
   } catch (err) {
-    fs.unlink(path.join(uploadsDir, req.file.filename), () => {});
+    fs.unlink(uploadedFilePath, () => {});
     console.error('Upload error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -109,15 +126,20 @@ router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), asyn
 
 // GET /api/guides/pdf/:filename  — serve PDF
 router.get('/pdf/:filename', guidesLimiter, (req, res) => {
-  const filename = path.basename(req.params.filename);
-  const filePath = path.join(uploadsDir, filename);
+  let filePath;
+  try {
+    filePath = resolveUploadPath(req.params.filename);
+  } catch {
+    return res.status(400).json({ error: 'Invalid filename' });
+  }
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: 'File not found' });
   }
 
+  const safeFilename = path.basename(filePath);
   res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  res.setHeader('Content-Disposition', `inline; filename="${safeFilename}"`);
   fs.createReadStream(filePath).pipe(res);
 });
 
