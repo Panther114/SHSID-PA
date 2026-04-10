@@ -4,236 +4,424 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SHSID Peer Advisors</title>
+  <meta name="description" content="Curated academic study guides written by SHSID students, for SHSID students." />
   <link rel="icon" type="image/png" href="/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
-  <script>
-    (function(){
-      var t = localStorage.getItem('pa-theme');
-      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
-      else if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
-    })();
-  </script>
+  <!-- Prevent flash of wrong theme -->
+  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})()</script>
   <style>
     /* ── HERO ── */
     .hero {
-      background: var(--hero-gradient);
-      color: var(--hero-text);
-      padding: 7rem 2rem 5.5rem;
+      position: relative;
+      min-height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      padding: 6rem 2rem 8rem;
+      overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(110px);
+      pointer-events: none;
+      will-change: transform;
+    }
+    .blob-1 {
+      width: 650px; height: 650px;
+      background: rgba(139,92,246,0.28);
+      top: -180px; left: -160px;
+      animation: drift1 24s ease-in-out infinite;
+    }
+    .blob-2 {
+      width: 500px; height: 500px;
+      background: rgba(59,130,246,0.2);
+      bottom: -80px; right: -100px;
+      animation: drift2 19s ease-in-out infinite;
+    }
+    .blob-3 {
+      width: 380px; height: 380px;
+      background: rgba(236,72,153,0.12);
+      top: 50%; left: 55%;
+      animation: drift3 15s ease-in-out infinite;
+    }
+    [data-theme="light"] .blob-1 { background: rgba(99,102,241,0.14); }
+    [data-theme="light"] .blob-2 { background: rgba(37,99,235,0.1); }
+    [data-theme="light"] .blob-3 { background: rgba(236,72,153,0.07); }
+
+    @keyframes drift1 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(70px,55px) scale(1.12); }
+    }
+    @keyframes drift2 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(-55px,-75px) scale(0.9); }
+    }
+    @keyframes drift3 {
+      0%,100% { transform: translate(-50%,-50%) scale(1); }
+      33%      { transform: translate(-38%,-62%) scale(1.1); }
+      66%      { transform: translate(-62%,-38%) scale(0.88); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.28rem 0.9rem;
+      border-radius: 99px;
+      background: var(--c-accent-bg);
+      border: 1px solid rgba(139,92,246,0.22);
+      color: var(--c-accent2);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.75rem;
+    }
+    [data-theme="light"] .hero-eyebrow { border-color: rgba(99,102,241,0.2); }
+
+    .hero-eyebrow-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--c-accent2);
+      flex-shrink: 0;
+    }
+    .hero-title {
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: var(--c-text);
+      margin-bottom: 1.25rem;
+    }
+    .grad-text {
+      background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 40%, #818cf8 70%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    [data-theme="light"] .grad-text {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 60%, #4338ca 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.125rem);
+      color: var(--c-text2);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .section-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--c-accent2);
+      margin-bottom: 0.65rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--c-text);
+      margin-bottom: 0.75rem;
+      line-height: 1.1;
+    }
+    .section-desc {
+      font-size: 1rem;
+      color: var(--c-text2);
+      max-width: 480px;
+      line-height: 1.75;
+      margin-bottom: 3rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      background: var(--card-hover-bg);
+      border-color: var(--card-hover-border);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    }
+    .feature-icon-wrap {
+      width: 44px; height: 44px;
+      border-radius: 11px;
+      background: var(--c-accent-bg);
+      border: 1px solid rgba(139,92,246,0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 1.1rem;
+    }
+    [data-theme="light"] .feature-icon-wrap { border-color: rgba(99,102,241,0.14); }
+    .feature-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--c-text);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.45rem;
+    }
+    .feature-desc {
+      font-size: 0.875rem;
+      color: var(--c-text2);
+      line-height: 1.7;
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      border: none;
+      border-top: 1px solid var(--c-border);
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      text-align: center;
+      padding: 7rem 2rem 9rem;
       position: relative;
       overflow: hidden;
     }
-    .hero::after {
+    .cta-section::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 60% 70% at 50% 110%, rgba(255,255,255,0.12) 0%, transparent 65%);
+      background: radial-gradient(ellipse 70% 55% at 50% 50%, var(--c-accent-bg) 0%, transparent 70%);
       pointer-events: none;
     }
-    .hero h1 {
-      font-size: clamp(2.2rem, 5.5vw, 4rem);
+    .cta-content { position: relative; z-index: 1; }
+    .cta-kicker {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--c-accent2);
+      margin-bottom: 0.65rem;
+    }
+    .cta-title {
+      font-size: clamp(1.8rem, 4vw, 3rem);
       font-weight: 900;
-      margin-bottom: 1.1rem;
-      letter-spacing: -1px;
-      line-height: 1.12;
-      color: var(--hero-text);
-      position: relative;
-      z-index: 1;
+      letter-spacing: -0.04em;
+      color: var(--c-text);
+      margin-bottom: 0.8rem;
+      line-height: 1.1;
     }
-    .hero p {
-      font-size: 1.12rem;
-      color: var(--hero-sub);
-      max-width: 580px;
-      margin: 0 auto 2.5rem;
+    .cta-sub {
+      font-size: 1.025rem;
+      color: var(--c-text2);
+      max-width: 440px;
+      margin: 0 auto 2.25rem;
       line-height: 1.7;
-      position: relative;
-      z-index: 1;
     }
-    .hero .btn-hero {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.82rem 2.2rem;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-      background: linear-gradient(135deg, var(--hero-btn-from) 0%, var(--hero-btn-to) 100%);
-      color: var(--hero-text);
-      box-shadow: var(--hero-btn-shadow);
-      transition: all 0.26s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      z-index: 1;
-    }
-    [data-theme="light"] .hero .btn-hero { color: #1d4ed8; }
-    .hero .btn-hero:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 36px rgba(0,0,0,0.22);
-      filter: brightness(1.04);
-    }
-    .hero .btn-hero:active { transform: scale(0.97); }
-
-    /* ── SECTIONS ── */
-    section {
-      max-width: 920px;
-      margin: 4rem auto;
-      padding: 0 1.5rem;
-    }
-    section h2 {
-      font-size: 1.8rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      color: var(--text-primary);
-      letter-spacing: -0.4px;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    section h2::before {
-      content: '';
-      display: inline-block;
-      width: 4px;
-      height: 1.6rem;
-      border-radius: 4px;
-      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-2) 100%);
-      flex-shrink: 0;
-    }
-    section p { color: var(--text-secondary); margin-bottom: 0.8rem; }
-
-    /* ── CARDS ── */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 1.25rem;
-      margin-top: 2rem;
-    }
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 18px;
-      padding: 1.75rem 1.6rem;
-      box-shadow: var(--card-shadow);
-      border: 1px solid var(--card-border);
-      border-left: 3px solid var(--card-accent);
-      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--card-shadow-hover);
-    }
-    .card-icon {
-      font-size: 1.5rem;
-      margin-bottom: 0.75rem;
-      display: block;
-    }
-    .card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.45rem;
-      color: var(--text-primary);
-      letter-spacing: -0.2px;
-    }
-    .card p { font-size: 0.88rem; color: var(--text-secondary); margin: 0; }
 
     @media (max-width: 540px) {
-      .hero { padding: 5rem 1.25rem 4rem; }
-      section { margin: 2.5rem auto; }
+      .hero { padding: 4rem 1.25rem 6rem; }
+      .blob-1 { width: 300px; height: 300px; }
+      .blob-2 { width: 260px; height: 260px; }
+      .blob-3 { width: 200px; height: 200px; }
+      .features, .cta-section { padding-left: 1.25rem; padding-right: 1.25rem; }
     }
   </style>
 </head>
 <body>
+  <div id="root"></div>
 
-<nav>
-  <a class="nav-left" href="index.html">
-    <img class="nav-icon" src="/icon.png" alt="SHSID PA icon" />
-    <span class="nav-brand">SHSID Peer Advisors</span>
-  </a>
-  <div class="nav-right">
-    <div class="nav-links">
-      <a href="guides.html">Guides</a>
-      <a href="#about">About</a>
-    </div>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-      <span class="theme-dot"></span><span class="toggle-label">Pink</span>
-    </button>
-  </div>
-</nav>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<div class="hero">
-  <h1>Academic Guides by Peers</h1>
-  <p>Curated study guides written by SHSID students, for SHSID students. Find resources for every subject and level.</p>
-  <a href="guides.html" class="btn-hero">Browse Guides →</a>
-</div>
+  <script type="text/babel">
+    const { useState, useCallback } = React;
+    const { createRoot } = ReactDOM;
 
-<section id="about">
-  <h2>About</h2>
-  <p>
-    The SHSID Peer Advisors program connects students who excel in their coursework with peers who want to improve.
-    Our guides are written and reviewed by experienced students to ensure accuracy and clarity.
-  </p>
-  <p>
-    Whether you're just starting out or preparing for advanced coursework, you'll find resources tailored to your level.
-    New guides are added regularly across a growing range of subjects.
-  </p>
+    /* ── Theme hook ── */
+    function useTheme() {
+      const [theme, setTheme] = useState(() =>
+        localStorage.getItem('pa-theme') === 'light' ? 'light' : 'dark'
+      );
+      const toggle = useCallback(() => {
+        const next = theme === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('pa-theme', next);
+      }, [theme]);
+      return { theme, toggle };
+    }
 
-  <div class="card-grid">
-    <div class="card">
-      <span class="card-icon">✍️</span>
-      <h3>Student-Written</h3>
-      <p>Every guide is authored by a fellow SHSID student who has excelled in that subject.</p>
-    </div>
-    <div class="card">
-      <span class="card-icon">📊</span>
-      <h3>Multi-Level</h3>
-      <p>Guides are tagged Beginner, Intermediate, or Advanced so you can find the right fit.</p>
-    </div>
-    <div class="card">
-      <span class="card-icon">🎓</span>
-      <h3>Always Free</h3>
-      <p>All materials are freely available to every SHSID student, no sign-up required to read.</p>
-    </div>
-  </div>
-</section>
+    /* ── Nav ── */
+    function Nav({ theme, onToggle }) {
+      return (
+        <nav>
+          <a href="/index.html" className="nav-logo">
+            <img src="/icon.png" alt="PA" className="nav-icon-img" />
+            <span className="nav-brand">SHSID Peer Advisors</span>
+          </a>
+          <div className="nav-spacer" />
+          <div className="nav-actions">
+            <a href="/guides.html" className="nav-link">Guides</a>
+            <a href="#about" className="nav-link">About</a>
+            <button className="theme-btn" onClick={onToggle} aria-label="Toggle theme" title="Toggle theme">
+              {theme === 'dark' ? '☀' : '◑'}
+            </button>
+          </div>
+        </nav>
+      );
+    }
 
-<footer>
-  &copy; 2024 SHSID Peer Advisors &middot; All rights reserved
-</footer>
+    /* ── Hero ── */
+    function Hero() {
+      return (
+        <section className="hero">
+          <div className="hero-blob blob-1" aria-hidden="true" />
+          <div className="hero-blob blob-2" aria-hidden="true" />
+          <div className="hero-blob blob-3" aria-hidden="true" />
+          <div className="hero-content">
+            <div className="hero-eyebrow">
+              <span className="hero-eyebrow-dot" />
+              Student-Powered Resources
+            </div>
+            <h1 className="hero-title">
+              Academic Guides<br />
+              <span className="grad-text">by Your Peers</span>
+            </h1>
+            <p className="hero-subtitle">
+              Curated study guides written by SHSID students who excelled in their coursework.
+              Find resources for every subject and level — completely free.
+            </p>
+            <div className="hero-actions">
+              <a href="/guides.html" className="btn btn-primary btn-lg">
+                Browse Guides →
+              </a>
+              <a href="#about" className="btn btn-ghost btn-lg">
+                Learn More
+              </a>
+            </div>
+          </div>
+        </section>
+      );
+    }
 
-<script>
-  const THEMES = ['pink', 'light', 'dark'];
-  const LABELS = { pink: 'Pink', light: 'Light', dark: 'Dark' };
-  const toggleBtn = document.getElementById('theme-toggle');
+    /* ── Features ── */
+    const FEATURES = [
+      {
+        icon: '✍️',
+        name: 'Student-Written',
+        desc: 'Every guide is authored by a fellow SHSID student who has excelled in that subject — written from first-hand experience.',
+      },
+      {
+        icon: '◈',
+        name: 'Multi-Level',
+        desc: 'Guides are tagged Beginner, Intermediate, or Advanced so you can find content that matches exactly where you are.',
+      },
+      {
+        icon: '◎',
+        name: 'Always Free',
+        desc: 'All materials are freely available to every SHSID student — no account required, no paywalls, ever.',
+      },
+    ];
 
-  function getTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'pink';
-  }
+    function Features() {
+      return (
+        <section className="features" id="about">
+          <p className="section-eyebrow">Why it works</p>
+          <h2 className="section-title">Designed for SHSID students</h2>
+          <p className="section-desc">
+            Peer learning accelerates understanding. Our guides come from students who just mastered the material.
+          </p>
+          <div className="features-grid">
+            {FEATURES.map(f => (
+              <div key={f.name} className="feature-card">
+                <div className="feature-icon-wrap">{f.icon}</div>
+                <h3 className="feature-name">{f.name}</h3>
+                <p className="feature-desc">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
 
-  function applyTheme(t) {
-    if (t === 'pink') document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.setAttribute('data-theme', t);
-    localStorage.setItem('pa-theme', t);
-    syncToggle(t);
-  }
+    /* ── CTA ── */
+    function CtaSection() {
+      return (
+        <section className="cta-section">
+          <div className="cta-content">
+            <p className="cta-kicker">Ready to learn?</p>
+            <h2 className="cta-title">Find your next guide</h2>
+            <p className="cta-sub">
+              Browse the full library of peer-written academic guides across all subjects and levels.
+            </p>
+            <a href="/guides.html" className="btn btn-primary btn-lg">
+              Browse All Guides →
+            </a>
+          </div>
+        </section>
+      );
+    }
 
-  function syncToggle(t) {
-    t = t || getTheme();
-    toggleBtn.innerHTML = `<span class="theme-dot"></span><span class="toggle-label">${LABELS[t]}</span>`;
-  }
+    /* ── Footer ── */
+    function Footer() {
+      return (
+        <footer>
+          © 2024 SHSID Peer Advisors · All rights reserved
+        </footer>
+      );
+    }
 
-  syncToggle();
+    /* ── App ── */
+    function App() {
+      const { theme, toggle } = useTheme();
+      return (
+        <>
+          <Nav theme={theme} onToggle={toggle} />
+          <Hero />
+          <hr className="section-divider" />
+          <Features />
+          <CtaSection />
+          <Footer />
+        </>
+      );
+    }
 
-  toggleBtn.addEventListener('click', () => {
-    const next = THEMES[(THEMES.indexOf(getTheme()) + 1) % THEMES.length];
-    applyTheme(next);
-  });
-</script>
+    createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 </html>

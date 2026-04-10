@@ -7,392 +7,404 @@
   <link rel="icon" type="image/png" href="/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
-  <script>
-    (function(){
-      var t = localStorage.getItem('pa-theme');
-      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
-      else if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
-    })();
-  </script>
+  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})()</script>
   <style>
-    /* ── MAIN ── */
-    main {
-      max-width: 560px;
-      margin: 3.5rem auto;
-      padding: 0 1.5rem;
+    /* ── UPLOAD LAYOUT ── */
+    .upload-page {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 6rem;
     }
-    main h1 {
-      font-size: 2rem;
-      font-weight: 900;
+    .upload-header { margin-bottom: 2rem; }
+    .upload-header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--c-text);
       margin-bottom: 0.3rem;
-      color: var(--text-primary);
-      letter-spacing: -0.6px;
     }
-    .subtitle { color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; }
+    .upload-header p { color: var(--c-text2); font-size: 0.93rem; }
 
     /* ── FORM CARD ── */
     .form-card {
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 22px;
-      padding: 2.2rem;
-      box-shadow: var(--card-shadow);
       border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 2rem;
+      margin-bottom: 1.25rem;
+    }
+    .form-field { margin-bottom: 1.1rem; }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
     }
 
-    /* ── FORM FIELDS ── */
-    .form-group { margin-bottom: 1.3rem; }
-    label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      margin-bottom: 0.35rem;
-    }
-    input[type="text"],
-    input[type="number"],
-    select {
+    /* ── SELECT ── */
+    .form-select {
       width: 100%;
-      padding: 0.7rem 0.9rem;
-      border: 1px solid var(--input-border);
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 0.65rem 2.2rem 0.65rem 0.85rem;
       background: var(--input-bg);
-      color: var(--text-primary);
+      border: 1px solid var(--input-border);
+      border-radius: 9px;
+      color: var(--c-text);
+      font-size: 0.9rem;
       font-family: inherit;
-      transition: border-color 0.22s ease, box-shadow 0.22s ease;
-    }
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--input-focus-border);
-      box-shadow: var(--input-focus-shadow);
-    }
-    select {
       appearance: none;
       -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 0.9rem center;
-      padding-right: 2.2rem;
+      background-position: right 0.85rem center;
       cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
+    .form-select:focus {
+      outline: none;
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 3px var(--c-accent-bg);
+    }
+    .form-select option { background: var(--c-bg2); color: var(--c-text); }
 
     /* ── FILE DROP ZONE ── */
-    .file-input-wrap {
-      border: 2px dashed var(--file-border);
-      border-radius: 14px;
-      padding: 2rem 1.5rem;
+    .drop-zone {
+      border: 1.5px dashed var(--c-border2);
+      border-radius: 12px;
+      padding: 2.25rem 1.5rem;
       text-align: center;
       cursor: pointer;
-      transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
-      background: transparent;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--c-surface);
     }
-    .file-input-wrap:hover,
-    .file-input-wrap.drag-over {
-      border-color: var(--file-hover-border);
-      background: var(--file-hover-bg);
-      box-shadow: var(--file-hover-shadow);
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--c-accent);
+      background: var(--c-accent-bg);
     }
-    .file-input-wrap input[type="file"] { display: none; }
-    .file-label-icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; opacity: 0.6; }
-    .file-label-text { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
-    .file-label-text strong { color: var(--accent); font-weight: 700; }
-    #file-name {
+    .drop-zone.has-file {
+      border-color: var(--c-green);
+      background: var(--c-green-bg);
+    }
+    .drop-zone input[type="file"] { display: none; }
+    .drop-icon {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+      display: block;
+      opacity: 0.7;
+    }
+    .drop-text {
+      font-size: 0.85rem;
+      color: var(--c-text2);
+      line-height: 1.6;
+    }
+    .drop-text strong { color: var(--c-accent2); font-weight: 600; }
+    .drop-file-name {
       font-size: 0.8rem;
-      color: var(--text-secondary);
+      color: var(--c-green);
       margin-top: 0.5rem;
-      font-style: italic;
+      font-weight: 600;
     }
 
     /* ── MESSAGES ── */
-    .error-msg {
-      color: #e11d48;
-      background: rgba(225, 29, 72, 0.08);
-      border: 1px solid rgba(225, 29, 72, 0.2);
-      border-radius: 10px;
+    .msg-error {
+      background: var(--c-red-bg);
+      border: 1px solid rgba(239,68,68,0.22);
+      color: var(--c-red);
+      border-radius: 9px;
       padding: 0.65rem 0.9rem;
-      font-size: 0.875rem;
-      margin-bottom: 1.2rem;
-      display: none;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
     }
-    .success-msg {
-      color: #15803d;
-      background: rgba(21, 128, 61, 0.08);
-      border: 1px solid rgba(21, 128, 61, 0.2);
-      border-radius: 10px;
+    .msg-success {
+      background: var(--c-green-bg);
+      border: 1px solid rgba(16,185,129,0.22);
+      color: var(--c-green);
+      border-radius: 9px;
       padding: 0.65rem 0.9rem;
-      font-size: 0.875rem;
-      margin-bottom: 1.2rem;
-      display: none;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
     }
-
-    /* ── SUBMIT ── */
-    .submit-btn {
-      width: 100%;
-      padding: 0.85rem;
-      background: linear-gradient(135deg, var(--submit-from) 0%, var(--submit-to) 100%);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: inherit;
-      letter-spacing: 0.2px;
-      box-shadow: var(--btn-shadow);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px var(--accent-glow);
-      filter: brightness(1.06);
-    }
-    .submit-btn:active { transform: scale(0.97); }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; filter: none; }
 
     /* ── BACK LINK ── */
     .back-link {
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      margin-top: 1.4rem;
-      color: var(--accent);
+      color: var(--c-text2);
       text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 600;
-      transition: opacity 0.2s;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.15s;
     }
-    .back-link:hover { opacity: 0.75; }
+    .back-link:hover { color: var(--c-text); }
 
     @media (max-width: 540px) {
-      main { margin: 2rem auto; }
-      .form-card { padding: 1.5rem; }
+      .upload-page { padding: 2rem 1.25rem 4rem; }
+      .form-card { padding: 1.4rem; }
+      .form-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+  <div id="root"></div>
 
-<nav>
-  <a class="nav-left" href="index.html">
-    <img class="nav-icon" src="/icon.png" alt="SHSID PA icon" />
-    <span class="nav-brand">SHSID Peer Advisors</span>
-  </a>
-  <div class="nav-right">
-    <a href="guides.html">← Back to Guides</a>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-      <span class="theme-dot"></span><span class="toggle-label">Pink</span>
-    </button>
-  </div>
-</nav>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<main>
-  <h1>Upload Guide</h1>
-  <p class="subtitle">Share a new academic guide with the community.</p>
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+    const { createRoot } = ReactDOM;
 
-  <div class="form-card">
-    <div class="error-msg" id="error-msg"></div>
-    <div class="success-msg" id="success-msg"></div>
+    /* ── Helpers ── */
+    function parseJwt(token) {
+      try {
+        const b64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+        return JSON.parse(atob(b64));
+      } catch { return null; }
+    }
+    function isTokenValid(token) {
+      if (!token) return false;
+      const p = parseJwt(token);
+      return p && p.exp && p.exp * 1000 > Date.now();
+    }
 
-    <form id="upload-form" novalidate>
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" id="title" name="title" placeholder="e.g. Introduction to Calculus" required />
-      </div>
+    /* ── Theme hook ── */
+    function useTheme() {
+      const [theme, setTheme] = useState(() =>
+        localStorage.getItem('pa-theme') === 'light' ? 'light' : 'dark'
+      );
+      const toggle = useCallback(() => {
+        const next = theme === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('pa-theme', next);
+      }, [theme]);
+      return { theme, toggle };
+    }
 
-      <div class="form-group">
-        <label for="subject">Subject</label>
-        <input type="text" id="subject" name="subject" placeholder="e.g. Mathematics" required />
-      </div>
-
-      <div class="form-group">
-        <label for="subject_level">Level</label>
-        <select id="subject_level" name="subject_level" required>
-          <option value="" disabled selected>Select a level</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="issue_number">Issue Number</label>
-        <input type="number" id="issue_number" name="issue_number" min="1" placeholder="1" required />
-      </div>
-
-      <div class="form-group">
-        <label>PDF File</label>
-        <div class="file-input-wrap" id="file-drop-zone">
-          <input type="file" id="pdf" name="pdf" accept=".pdf" required />
-          <span class="file-label-icon">📄</span>
-          <div class="file-label-text">
-            <strong>Click to choose</strong> or drag &amp; drop a PDF
+    /* ── Nav ── */
+    function Nav({ theme, onToggle }) {
+      return (
+        <nav>
+          <a href="/index.html" className="nav-logo">
+            <img src="/icon.png" alt="PA" className="nav-icon-img" />
+            <span className="nav-brand">SHSID Peer Advisors</span>
+          </a>
+          <div className="nav-spacer" />
+          <div className="nav-actions">
+            <a href="/guides.html" className="nav-link">← Guides</a>
+            <button className="theme-btn" onClick={onToggle} aria-label="Toggle theme">
+              {theme === 'dark' ? '☀' : '◑'}
+            </button>
           </div>
-          <div id="file-name">No file selected</div>
-        </div>
-      </div>
-
-      <button type="submit" class="submit-btn" id="submit-btn">Upload Guide</button>
-    </form>
-  </div>
-
-  <a href="guides.html" class="back-link">← Back to all guides</a>
-</main>
-
-<footer>
-  &copy; 2024 SHSID Peer Advisors &middot; All rights reserved
-</footer>
-
-<script>
-  /* ---- Auth guard ---- */
-  function parseJwt(token) {
-    try {
-      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-      return JSON.parse(atob(base64));
-    } catch { return null; }
-  }
-
-  function isTokenValid(token) {
-    if (!token) return false;
-    const payload = parseJwt(token);
-    if (!payload || !payload.exp) return false;
-    return payload.exp * 1000 > Date.now();
-  }
-
-  const token = localStorage.getItem('jwt');
-  if (!isTokenValid(token)) {
-    window.location.href = 'guides.html';
-  }
-
-  /* ---- File input UX ---- */
-  const pdfInput = document.getElementById('pdf');
-  const fileNameEl = document.getElementById('file-name');
-  const dropZone = document.getElementById('file-drop-zone');
-
-  dropZone.addEventListener('click', () => pdfInput.click());
-  pdfInput.addEventListener('change', () => {
-    fileNameEl.textContent = pdfInput.files[0] ? pdfInput.files[0].name : 'No file selected';
-  });
-
-  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type === 'application/pdf') {
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      pdfInput.files = dt.files;
-      fileNameEl.textContent = file.name;
-    } else {
-      showError('Only PDF files are accepted.');
-    }
-  });
-
-  /* ---- Form submission ---- */
-  const form = document.getElementById('upload-form');
-  const errorEl = document.getElementById('error-msg');
-  const successEl = document.getElementById('success-msg');
-  const submitBtn = document.getElementById('submit-btn');
-
-  function showError(msg) {
-    errorEl.textContent = msg;
-    errorEl.style.display = '';
-    successEl.style.display = 'none';
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    errorEl.style.display = 'none';
-    successEl.style.display = 'none';
-
-    const title = document.getElementById('title').value.trim();
-    const subject = document.getElementById('subject').value.trim();
-    const subject_level = document.getElementById('subject_level').value;
-    const issue_number = document.getElementById('issue_number').value;
-    const file = pdfInput.files[0];
-
-    if (!title || !subject || !subject_level || !issue_number || !file) {
-      showError('All fields are required.');
-      return;
+        </nav>
+      );
     }
 
-    const jwt = localStorage.getItem('jwt');
-    if (!isTokenValid(jwt)) {
-      showError('Your session has expired. Please log in again.');
-      setTimeout(() => { window.location.href = 'guides.html'; }, 2000);
-      return;
+    /* ── Upload Form ── */
+    function UploadForm({ token }) {
+      const [title,        setTitle]        = useState('');
+      const [subject,      setSubject]      = useState('');
+      const [level,        setLevel]        = useState('');
+      const [issueNumber,  setIssueNumber]  = useState('');
+      const [file,         setFile]         = useState(null);
+      const [dragging,     setDragging]     = useState(false);
+      const [submitting,   setSubmitting]   = useState(false);
+      const [error,        setError]        = useState('');
+      const [success,      setSuccess]      = useState('');
+      const fileInputRef = useRef(null);
+
+      const setFileFromDrop = useCallback((f) => {
+        if (f && f.type === 'application/pdf') {
+          setFile(f);
+          setError('');
+        } else if (f) {
+          setError('Only PDF files are accepted.');
+        }
+      }, []);
+
+      const onDrop = e => {
+        e.preventDefault();
+        setDragging(false);
+        setFileFromDrop(e.dataTransfer.files[0]);
+      };
+
+      const onSubmit = async e => {
+        e.preventDefault();
+        setError(''); setSuccess('');
+        if (!title || !subject || !level || !issueNumber || !file) {
+          setError('All fields are required.'); return;
+        }
+        if (!isTokenValid(token)) {
+          setError('Your session has expired. Redirecting to guides…');
+          setTimeout(() => { window.location.href = '/guides.html'; }, 2000);
+          return;
+        }
+        const fd = new FormData();
+        fd.append('title', title);
+        fd.append('subject', subject);
+        fd.append('subject_level', level);
+        fd.append('issue_number', issueNumber);
+        fd.append('pdf', file);
+
+        setSubmitting(true);
+        try {
+          const res = await fetch('/api/guides/upload', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: fd,
+          });
+          const data = await res.json();
+          if (!res.ok) { setError(data.error || 'Upload failed.'); return; }
+          setSuccess(`"${data.title}" uploaded successfully!`);
+          setTitle(''); setSubject(''); setLevel(''); setIssueNumber(''); setFile(null);
+        } catch {
+          setError('Network error. Please try again.');
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      return (
+        <form className="form-card" onSubmit={onSubmit} noValidate>
+          {error   && <div className="msg-error">{error}</div>}
+          {success && <div className="msg-success">{success}</div>}
+
+          <div className="form-field">
+            <label className="form-label" htmlFor="title">Title</label>
+            <input
+              id="title"
+              className="form-input"
+              type="text"
+              placeholder="e.g. Introduction to Calculus"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="form-field">
+              <label className="form-label" htmlFor="subject">Subject</label>
+              <input
+                id="subject"
+                className="form-input"
+                type="text"
+                placeholder="e.g. Mathematics"
+                value={subject}
+                onChange={e => setSubject(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-field">
+              <label className="form-label" htmlFor="issue-number">Issue #</label>
+              <input
+                id="issue-number"
+                className="form-input"
+                type="number"
+                min="1"
+                placeholder="1"
+                value={issueNumber}
+                onChange={e => setIssueNumber(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-field">
+            <label className="form-label" htmlFor="level">Level</label>
+            <select
+              id="level"
+              className="form-select"
+              value={level}
+              onChange={e => setLevel(e.target.value)}
+              required
+            >
+              <option value="" disabled>Select a level</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+
+          <div className="form-field">
+            <label className="form-label">PDF File</label>
+            <div
+              className={`drop-zone${dragging ? ' drag-over' : ''}${file ? ' has-file' : ''}`}
+              onClick={() => fileInputRef.current && fileInputRef.current.click()}
+              onDragOver={e => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={onDrop}
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current && fileInputRef.current.click(); }}
+              aria-label="Click or drag to upload PDF"
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf"
+                onChange={e => setFileFromDrop(e.target.files[0])}
+              />
+              <span className="drop-icon">{file ? '✅' : '📄'}</span>
+              {file ? (
+                <div className="drop-file-name">{file.name}</div>
+              ) : (
+                <div className="drop-text">
+                  <strong>Click to choose</strong> or drag &amp; drop a PDF
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button type="submit" className="full-btn" disabled={submitting}>
+            {submitting ? 'Uploading…' : 'Upload Guide'}
+          </button>
+        </form>
+      );
     }
 
-    const fd = new FormData();
-    fd.append('title', title);
-    fd.append('subject', subject);
-    fd.append('subject_level', subject_level);
-    fd.append('issue_number', issue_number);
-    fd.append('pdf', file);
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Uploading…';
-
-    try {
-      const res = await fetch('/api/guides/upload', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${jwt}` },
-        body: fd,
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        showError(data.error || 'Upload failed.');
-      } else {
-        successEl.textContent = `"${data.title}" uploaded successfully!`;
-        successEl.style.display = '';
-        form.reset();
-        fileNameEl.textContent = 'No file selected';
-      }
-    } catch {
-      showError('Network error. Please try again.');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Upload Guide';
+    /* ── Footer ── */
+    function Footer() {
+      return <footer>© 2024 SHSID Peer Advisors · All rights reserved</footer>;
     }
-  });
 
-  /* ── Theme toggle ── */
-  const THEMES = ['pink', 'light', 'dark'];
-  const LABELS = { pink: 'Pink', light: 'Light', dark: 'Dark' };
-  const toggleBtn = document.getElementById('theme-toggle');
+    /* ── App ── */
+    function App() {
+      const { theme, toggle } = useTheme();
+      const [token] = useState(() => localStorage.getItem('jwt'));
+      const [checked, setChecked] = useState(false);
 
-  function getTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'pink';
-  }
+      useEffect(() => {
+        if (!isTokenValid(token)) {
+          window.location.href = '/guides.html';
+        } else {
+          setChecked(true);
+        }
+      }, [token]);
 
-  function applyTheme(t) {
-    if (t === 'pink') document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.setAttribute('data-theme', t);
-    localStorage.setItem('pa-theme', t);
-    syncToggle(t);
-  }
+      if (!checked) return null;
 
-  function syncToggle(t) {
-    t = t || getTheme();
-    toggleBtn.innerHTML = `<span class="theme-dot"></span><span class="toggle-label">${LABELS[t]}</span>`;
-  }
+      return (
+        <>
+          <Nav theme={theme} onToggle={toggle} />
+          <div className="upload-page">
+            <div className="upload-header">
+              <h1>Upload Guide</h1>
+              <p>Share a new academic guide with the SHSID community.</p>
+            </div>
+            <UploadForm token={token} />
+            <a href="/guides.html" className="back-link">← Back to all guides</a>
+          </div>
+          <Footer />
+        </>
+      );
+    }
 
-  syncToggle();
-
-  toggleBtn.addEventListener('click', () => {
-    const next = THEMES[(THEMES.indexOf(getTheme()) + 1) % THEMES.length];
-    applyTheme(next);
-  });
-</script>
+    createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 </html>
