@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHSID Peer Advisors</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #1a1a2e;
+      background: #f8f9fc;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      background: #1a1a2e;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .nav-brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-links a {
+      color: #cdd3f0;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: #fff;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: #a8b4d8;
+      max-width: 640px;
+      margin: 0 auto 2rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary {
+      background: #e94560;
+      color: #fff;
+      border: none;
+    }
+
+    /* SECTIONS */
+    section {
+      max-width: 900px;
+      margin: 3.5rem auto;
+      padding: 0 1.5rem;
+    }
+    section h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #1a1a2e;
+      border-left: 4px solid #e94560;
+      padding-left: 0.75rem;
+    }
+    section p { color: #444; margin-bottom: 0.75rem; }
+
+    /* CARDS */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      border-top: 3px solid #e94560;
+    }
+    .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .card p { font-size: 0.9rem; color: #666; margin: 0; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.85rem;
+      color: #888;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">SHSID Peer Advisors</a>
+  <div class="nav-links">
+    <a href="guides.html">Guides</a>
+    <a href="#about">About</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Academic Guides by Peers</h1>
+  <p>Curated study guides written by SHSID students, for SHSID students. Find resources for every subject and level.</p>
+  <a href="guides.html" class="btn btn-primary">Browse Guides →</a>
+</div>
+
+<section id="about">
+  <h2>About</h2>
+  <p>
+    The SHSID Peer Advisors program connects students who excel in their coursework with peers who want to improve.
+    Our guides are written and reviewed by experienced students to ensure accuracy and clarity.
+  </p>
+  <p>
+    Whether you're just starting out or preparing for advanced coursework, you'll find resources tailored to your level.
+    New guides are added regularly across a growing range of subjects.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Student-Written</h3>
+      <p>Every guide is authored by a fellow SHSID student who has excelled in that subject.</p>
+    </div>
+    <div class="card">
+      <h3>Multi-Level</h3>
+      <p>Guides are tagged Beginner, Intermediate, or Advanced so you can find the right fit.</p>
+    </div>
+    <div class="card">
+      <h3>Always Free</h3>
+      <p>All materials are freely available to every SHSID student, no sign-up required to read.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2024 SHSID Peer Advisors &middot; All rights reserved
+</footer>
+
+</body>
+</html>
