@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
-  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})()</script>
+  <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');else if(t==='pink')document.documentElement.setAttribute('data-theme','pink');})()</script>
   <style>
     /* ── PAGE HEADER ── */
     .page-header {
@@ -94,6 +94,52 @@
     [data-theme="light"] .filter-chip:hover,
     [data-theme="light"] .filter-chip.active {
       border-color: rgba(99,102,241,0.25);
+    }
+    [data-theme="pink"] .filter-chip:hover,
+    [data-theme="pink"] .filter-chip.active {
+      border-color: rgba(233,30,140,0.28);
+    }
+
+    /* ── ISSUE ACCORDION ── */
+    .issue-tab {
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .issue-tab-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.25rem;
+      background: var(--card-bg);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+      border: none;
+      width: 100%;
+      font-family: inherit;
+      text-align: left;
+    }
+    .issue-tab-header:hover { background: var(--card-hover-bg); }
+    .issue-tab-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--c-text);
+      letter-spacing: -0.02em;
+    }
+    .issue-tab-arrow {
+      font-size: 0.75rem;
+      color: var(--c-text3);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .issue-tab-arrow.open { transform: rotate(90deg); }
+    .issue-tab-body {
+      padding: 0.75rem 1.25rem 1.25rem;
+      background: var(--c-bg);
+      border-top: 1px solid var(--card-border);
     }
 
     /* ── GUIDES CONTENT ── */
@@ -357,13 +403,15 @@
 
     /* ── Theme hook ── */
     function useTheme() {
-      const [theme, setTheme] = useState(() =>
-        localStorage.getItem('pa-theme') === 'light' ? 'light' : 'dark'
-      );
+      const [theme, setTheme] = useState(() => {
+        const t = localStorage.getItem('pa-theme');
+        return t === 'light' ? 'light' : t === 'pink' ? 'pink' : 'dark';
+      });
       const toggle = useCallback(() => {
-        const next = theme === 'dark' ? 'light' : 'dark';
+        const next = theme === 'dark' ? 'light' : theme === 'light' ? 'pink' : 'dark';
         setTheme(next);
         if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else if (next === 'pink') document.documentElement.setAttribute('data-theme', 'pink');
         else document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('pa-theme', next);
       }, [theme]);
@@ -402,7 +450,7 @@
               </button>
             )}
             <button className="theme-btn" onClick={onToggle} aria-label="Toggle theme">
-              {theme === 'dark' ? '☀' : '◑'}
+              {theme === 'dark' ? '☀' : theme === 'light' ? '🌸' : '🌙'}
             </button>
           </div>
         </nav>
@@ -418,7 +466,7 @@
 
       const submit = async () => {
         setError('');
-        if (!email || !password) { setError('Email and password are required.'); return; }
+        if (!email || !password) { setError('Account and password are required.'); return; }
         setLoading(true);
         try {
           const res = await fetch('/api/auth/login', {
@@ -446,13 +494,13 @@
             <h2 className="modal-title" id="modal-title">Admin Login</h2>
             {error && <div className="form-error">{error}</div>}
             <div className="form-field">
-              <label className="form-label" htmlFor="login-email">Email</label>
+              <label className="form-label" htmlFor="login-email">Account</label>
               <input
                 id="login-email"
                 className="form-input"
-                type="email"
-                autoComplete="email"
-                placeholder="your-account@example.com"
+                type="text"
+                autoComplete="username"
+                placeholder="ask austin for account name"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 onKeyDown={onKey}
@@ -499,10 +547,8 @@
         <div className="guide-card">
           <div className="guide-info">
             <div className="guide-title">{guide.title}</div>
-            <div className="guide-meta">Issue #{guide.issue_number}</div>
           </div>
           <div className="guide-actions">
-            <span className={`badge ${badgeClass(guide.subject_level)}`}>{guide.subject_level}</span>
             <a className="pdf-btn" href={guide.pdf_url} target="_blank" rel="noopener noreferrer">
               View PDF ↗
             </a>
@@ -511,65 +557,114 @@
       );
     }
 
+    /* ── Issue Tab (accordion item) ── */
+    function IssueTab({ issueNumber, guides, subjects, search }) {
+      const [open, setOpen] = useState(false);
+
+      const filteredGuides = useMemo(() => {
+        if (!search.trim()) return guides;
+        const q = search.trim().toLowerCase();
+        return guides.filter(g =>
+          g.title.toLowerCase().includes(q) ||
+          g.subject.toLowerCase().includes(q) ||
+          g.subject_level.toLowerCase().includes(q)
+        );
+      }, [guides, search]);
+
+      // Index filtered guides by subject+level for quick lookup
+      const bySubjectLevel = useMemo(() => {
+        const idx = {};
+        for (const g of filteredGuides) {
+          if (!idx[g.subject]) idx[g.subject] = {};
+          if (!idx[g.subject][g.subject_level]) idx[g.subject][g.subject_level] = [];
+          idx[g.subject][g.subject_level].push(g);
+        }
+        return idx;
+      }, [filteredGuides]);
+
+      return (
+        <div className="issue-tab">
+          <button
+            className="issue-tab-header"
+            onClick={() => setOpen(o => !o)}
+            aria-expanded={open}
+          >
+            <span className="issue-tab-title">Issue {issueNumber}</span>
+            <span className={`issue-tab-arrow${open ? ' open' : ''}`}>▶</span>
+          </button>
+          {open && (
+            <div className="issue-tab-body">
+              {subjects.map(subj => {
+                const subjectLevels = bySubjectLevel[subj.name] || {};
+                return (
+                  <div key={subj.name} className="subject-group">
+                    <h3 className="subject-heading">{subj.name}</h3>
+                    {subj.levels.map(level => {
+                      const levelGuides = subjectLevels[level] || [];
+                      return (
+                        <div key={level} className="level-group">
+                          <div className="level-label">{level}</div>
+                          {levelGuides.length === 0 ? (
+                            <div style={{
+                              fontSize: '0.8rem',
+                              color: 'var(--c-text3)',
+                              padding: '0.3rem 0.5rem',
+                              fontStyle: 'italic',
+                            }}>No guide available</div>
+                          ) : (
+                            levelGuides.map(g => <GuideCard key={g.id} guide={g} />)
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    }
+
     /* ── Guide List ── */
-    function GuidesList({ guides, search, levelFilter }) {
-      const LEVEL_ORDER = ['Beginner', 'Intermediate', 'Advanced'];
-
-      const filtered = useMemo(() => {
-        let g = guides;
-        if (search.trim()) {
-          const q = search.trim().toLowerCase();
-          g = g.filter(x =>
-            x.title.toLowerCase().includes(q) ||
-            x.subject.toLowerCase().includes(q)
-          );
+    function GuidesList({ guides, subjects, search }) {
+      // Group guides by issue number
+      const byIssue = useMemo(() => {
+        const idx = {};
+        for (const g of guides) {
+          if (!idx[g.issue_number]) idx[g.issue_number] = [];
+          idx[g.issue_number].push(g);
         }
-        if (levelFilter !== 'All') {
-          g = g.filter(x => x.subject_level.toLowerCase() === levelFilter.toLowerCase());
-        }
-        return g;
-      }, [guides, search, levelFilter]);
+        return idx;
+      }, [guides]);
 
-      if (filtered.length === 0) {
+      const sortedIssues = useMemo(() =>
+        Object.keys(byIssue).map(Number).sort((a, b) => a - b),
+        [byIssue]
+      );
+
+      if (sortedIssues.length === 0) {
         return (
           <div className="guides-content">
             <div className="state-msg">
               <div className="state-msg-title">No guides found</div>
-              <div>Try adjusting your search or filter.</div>
+              <div>Try adjusting your search.</div>
             </div>
           </div>
         );
       }
 
-      // Group by subject
-      const bySubject = {};
-      for (const g of filtered) {
-        if (!bySubject[g.subject]) bySubject[g.subject] = {};
-        if (!bySubject[g.subject][g.subject_level]) bySubject[g.subject][g.subject_level] = [];
-        bySubject[g.subject][g.subject_level].push(g);
-      }
-
       return (
         <div className="guides-content">
-          {Object.keys(bySubject).sort().map(subject => {
-            const levels = bySubject[subject];
-            const sortedLevels = [...new Set([...LEVEL_ORDER, ...Object.keys(levels)])].filter(l => levels[l]);
-            return (
-              <div key={subject} className="subject-group">
-                <h2 className="subject-heading">{subject}</h2>
-                {sortedLevels.map(level => (
-                  <div key={level} className="level-group">
-                    <div className="level-label">{level}</div>
-                    {levels[level]
-                      .slice()
-                      .sort((a,b) => a.issue_number - b.issue_number)
-                      .map(g => <GuideCard key={g.id} guide={g} />)
-                    }
-                  </div>
-                ))}
-              </div>
-            );
-          })}
+          {sortedIssues.map(issue => (
+            <IssueTab
+              key={issue}
+              issueNumber={issue}
+              guides={byIssue[issue]}
+              subjects={subjects}
+              search={search}
+            />
+          ))}
         </div>
       );
     }
@@ -584,19 +679,25 @@
       const { theme, toggle } = useTheme();
       const { authed, login } = useAuth();
 
-      const [guides,      setGuides]      = useState([]);
-      const [loading,     setLoading]     = useState(true);
-      const [error,       setError]       = useState('');
-      const [showModal,   setShowModal]   = useState(false);
-      const [search,      setSearch]      = useState('');
-      const [levelFilter, setLevelFilter] = useState('All');
+      const [guides,    setGuides]    = useState([]);
+      const [subjects,  setSubjects]  = useState([]);
+      const [loading,   setLoading]   = useState(true);
+      const [error,     setError]     = useState('');
+      const [showModal, setShowModal] = useState(false);
+      const [search,    setSearch]    = useState('');
 
       useEffect(() => {
         (async () => {
           try {
-            const res = await fetch('/api/guides');
-            if (!res.ok) throw new Error('Failed');
-            setGuides(await res.json());
+            const [guidesRes, subjectsRes] = await Promise.all([
+              fetch('/api/guides'),
+              fetch('/subjects.json'),
+            ]);
+            if (!guidesRes.ok) throw new Error('Failed to load guides');
+            const guidesData = await guidesRes.json();
+            const subjectsData = subjectsRes.ok ? await subjectsRes.json() : { subjects: [] };
+            setGuides(guidesData);
+            setSubjects(subjectsData.subjects || []);
           } catch {
             setError('Failed to load guides. Please try again later.');
           } finally {
@@ -605,7 +706,16 @@
         })();
       }, []);
 
-      const LEVELS = ['All', 'Beginner', 'Intermediate', 'Advanced'];
+      // When search changes, filter guides (pass all to GuidesList which filters per issue)
+      const filteredGuides = useMemo(() => {
+        if (!search.trim()) return guides;
+        const q = search.trim().toLowerCase();
+        return guides.filter(g =>
+          g.title.toLowerCase().includes(q) ||
+          g.subject.toLowerCase().includes(q) ||
+          g.subject_level.toLowerCase().includes(q)
+        );
+      }, [guides, search]);
 
       return (
         <>
@@ -622,7 +732,7 @@
 
           <div className="page-header">
             <h1>Academic Guides</h1>
-            <p>Peer-written study guides, organized by subject and level.</p>
+            <p>Peer-written study guides, organized by issue, subject, and level.</p>
           </div>
 
           <div className="toolbar">
@@ -637,15 +747,6 @@
                 aria-label="Search guides"
               />
             </div>
-            {LEVELS.map(l => (
-              <button
-                key={l}
-                className={`filter-chip${levelFilter === l ? ' active' : ''}`}
-                onClick={() => setLevelFilter(l)}
-              >
-                {l}
-              </button>
-            ))}
           </div>
 
           {loading && <SkeletonLoader />}
@@ -661,7 +762,7 @@
             </div>
           )}
           {!loading && !error && guides.length > 0 && (
-            <GuidesList guides={guides} search={search} levelFilter={levelFilter} />
+            <GuidesList guides={filteredGuides} subjects={subjects} search={search} />
           )}
 
           <Footer />
