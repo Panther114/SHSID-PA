@@ -2,26 +2,22 @@
   "subjects": [
     {
       "name": "English",
-      "levels": ["H+", "H", "S+", "S"]
+      "levels": ["AP", "H+", "H", "S+", "S"]
     },
     {
       "name": "Math",
-      "levels": ["Calculus", "Precalculus"]
-    },
-    {
-      "name": "Chinese",
-      "levels": ["H+", "H", "S"]
+      "levels": ["AP Calculus", "AP Precalculus"]
     },
     {
       "name": "History",
-      "levels": ["AP", "H", "S+", "S"]
+      "levels": ["H", "S+", "S"]
     },
     {
       "name": "Economics",
       "levels": ["H", "S"]
     },
     {
-      "name": "Computer Science",
+      "name": "Chemistry",
       "levels": ["H", "S"]
     },
     {
@@ -29,7 +25,15 @@
       "levels": ["H", "S"]
     },
     {
-      "name": "Chemistry",
+      "name": "Biology",
+      "levels": ["H", "S"]
+    },
+    {
+      "name": "Chinese",
+      "levels": ["H+", "H", "S"]
+    },
+    {
+      "name": "Computer Science",
       "levels": ["H", "S"]
     },
     {
@@ -42,6 +46,10 @@
     },
     {
       "name": "Drama",
+      "levels": ["H", "S"]
+    },
+    {
+      "name": "Geography",
       "levels": ["H", "S"]
     }
   ]
