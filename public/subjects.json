@@ -2,19 +2,19 @@
   "subjects": [
     {
       "name": "English",
-      "levels": ["AP", "H+", "H", "S+", "S"]
+      "levels": ["AP Language", "H+", "H", "S+", "S"]
     },
     {
       "name": "Math",
-      "levels": ["AP Calculus", "AP Precalculus"]
+      "levels": ["AP Calculus", "AP Precalculus", "Precalculus H", "Precalculus S"]
     },
     {
       "name": "History",
-      "levels": ["H", "S+", "S"]
+      "levels": ["AP World History", "H", "S+", "S"]
     },
     {
       "name": "Economics",
-      "levels": ["H", "S"]
+      "levels": ["AP Microeconomics", "H", "S"]
     },
     {
       "name": "Chemistry",
@@ -26,11 +26,11 @@
     },
     {
       "name": "Biology",
-      "levels": ["H", "S"]
+      "levels": ["Default"]
     },
     {
       "name": "Chinese",
-      "levels": ["H+", "H", "S"]
+      "levels": ["H/H+", "S", "AP"]
     },
     {
       "name": "Computer Science",
@@ -38,14 +38,14 @@
     },
     {
       "name": "Visual Arts",
+      "levels": ["Default"]
+    },
+    {
+      "name": "Music Appreciation",
       "levels": ["H", "S"]
     },
     {
-      "name": "Music",
-      "levels": ["H", "S"]
-    },
-    {
-      "name": "Drama",
+      "name": "Theater",
       "levels": ["H", "S"]
     },
     {
