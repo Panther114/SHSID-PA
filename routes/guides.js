@@ -4,10 +4,27 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const rateLimit = require('express-rate-limit');
 const pool = require('../db');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
+
+const guidesLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please slow down.' },
+});
+
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many upload attempts. Please try again later.' },
+});
 
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -35,7 +52,7 @@ const upload = multer({
 });
 
 // GET /api/guides
-router.get('/', async (_req, res) => {
+router.get('/', guidesLimiter, async (_req, res) => {
   try {
     const result = await pool.query(
       `SELECT id, title, subject, subject_level, issue_number, filename, original_name, created_at
@@ -56,20 +73,20 @@ router.get('/', async (_req, res) => {
 });
 
 // POST /api/guides/upload  (protected)
-router.post('/upload', authMiddleware, upload.single('pdf'), async (req, res) => {
+router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'PDF file is required' });
   }
 
   const { title, subject, subject_level, issue_number } = req.body;
   if (!title || !subject || !subject_level || !issue_number) {
-    fs.unlink(req.file.path, () => {});
+    fs.unlink(path.join(uploadsDir, req.file.filename), () => {});
     return res.status(400).json({ error: 'title, subject, subject_level, and issue_number are required' });
   }
 
   const issueNum = parseInt(issue_number, 10);
   if (isNaN(issueNum) || issueNum < 1) {
-    fs.unlink(req.file.path, () => {});
+    fs.unlink(path.join(uploadsDir, req.file.filename), () => {});
     return res.status(400).json({ error: 'issue_number must be a positive integer' });
   }
 
@@ -84,14 +101,14 @@ router.post('/upload', authMiddleware, upload.single('pdf'), async (req, res) =>
     const guide = result.rows[0];
     res.status(201).json({ ...guide, pdf_url: `/api/guides/pdf/${guide.filename}` });
   } catch (err) {
-    fs.unlink(req.file.path, () => {});
+    fs.unlink(path.join(uploadsDir, req.file.filename), () => {});
     console.error('Upload error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // GET /api/guides/pdf/:filename  — serve PDF
-router.get('/pdf/:filename', (req, res) => {
+router.get('/pdf/:filename', guidesLimiter, (req, res) => {
   const filename = path.basename(req.params.filename);
   const filePath = path.join(uploadsDir, filename);
 
