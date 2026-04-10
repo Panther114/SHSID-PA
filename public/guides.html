@@ -4,49 +4,129 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Guides – SHSID Peer Advisors</title>
+  <link rel="icon" type="image/png" href="/icon.png" />
+  <script>
+    // Apply saved theme before paint to avoid flash
+    (function(){ var t=localStorage.getItem('pa-theme'); if(t==='light') document.documentElement.setAttribute('data-theme','light'); })();
+  </script>
   <style>
+    /* ── Theme variables ── */
+    :root {
+      --nav-bg: #9b3060;
+      --nav-text: #fff;
+      --nav-link: #fce4ec;
+      --nav-link-hover: #fff;
+      --body-bg: #fff8fb;
+      --text-primary: #2d1020;
+      --text-secondary: #7a4560;
+      --accent: #c2185b;
+      --card-bg: #ffffff;
+      --card-shadow: rgba(194,24,91,0.09);
+      --card-shadow-hover: rgba(194,24,91,0.17);
+      --subject-border: #c2185b;
+      --level-color: #c06080;
+      --modal-bg: #fff;
+      --modal-input-border: #e0b0c8;
+      --modal-input-focus: #c2185b;
+      --btn-outline-color: #fce4ec;
+      --btn-outline-border: rgba(252,228,236,0.6);
+      --btn-primary-bg: #c2185b;
+      --btn-primary-text: #fff;
+      --pdf-link: #c2185b;
+      --footer-border: #f0c8d8;
+      --footer-text: #b07090;
+      --toggle-bg: rgba(255,255,255,0.18);
+      --toggle-text: #fff;
+      --toggle-border: rgba(255,255,255,0.35);
+    }
+    [data-theme="light"] {
+      --nav-bg: #1a1a2e;
+      --nav-text: #fff;
+      --nav-link: #cdd3f0;
+      --nav-link-hover: #fff;
+      --body-bg: #f8f9fc;
+      --text-primary: #1a1a2e;
+      --text-secondary: #555;
+      --accent: #e94560;
+      --card-bg: #ffffff;
+      --card-shadow: rgba(0,0,0,0.07);
+      --card-shadow-hover: rgba(0,0,0,0.13);
+      --subject-border: #e94560;
+      --level-color: #888;
+      --modal-bg: #fff;
+      --modal-input-border: #ccc;
+      --modal-input-focus: #e94560;
+      --btn-outline-color: #cdd3f0;
+      --btn-outline-border: #cdd3f0;
+      --btn-primary-bg: #e94560;
+      --btn-primary-text: #fff;
+      --pdf-link: #e94560;
+      --footer-border: #e0e0e0;
+      --footer-text: #888;
+      --toggle-bg: rgba(255,255,255,0.12);
+      --toggle-text: #cdd3f0;
+      --toggle-border: rgba(255,255,255,0.25);
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      color: #1a1a2e;
-      background: #f8f9fc;
+      color: var(--text-primary);
+      background: var(--body-bg);
       line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
     }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
-      background: #1a1a2e;
-      color: #fff;
+      background: var(--nav-bg);
+      color: var(--nav-text);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 2rem;
-      height: 60px;
+      padding: 0 1.5rem;
+      height: 62px;
       position: sticky;
       top: 0;
       z-index: 200;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+    }
+    .nav-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
     }
     .nav-brand {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--nav-text);
       text-decoration: none;
+      white-space: nowrap;
     }
-    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-right { display: flex; align-items: center; gap: 0.5rem; }
     .nav-right a {
-      color: #cdd3f0;
+      color: var(--nav-link);
       text-decoration: none;
-      font-size: 0.95rem;
-      transition: color 0.2s;
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      transition: color 0.2s, background 0.2s;
     }
-    .nav-right a:hover { color: #fff; }
+    .nav-right a:hover { color: var(--nav-link-hover); background: rgba(255,255,255,0.1); }
 
     .btn {
       display: inline-block;
-      padding: 0.45rem 1.1rem;
-      border-radius: 5px;
+      padding: 0.42rem 1.1rem;
+      border-radius: 6px;
       font-size: 0.9rem;
       font-weight: 600;
       text-decoration: none;
@@ -57,15 +137,34 @@
     .btn:hover { opacity: 0.85; }
     .btn-outline {
       background: transparent;
-      color: #cdd3f0;
-      border: 1px solid #cdd3f0;
+      color: var(--btn-outline-color);
+      border: 1px solid var(--btn-outline-border);
     }
     .btn-primary {
-      background: #e94560;
-      color: #fff;
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
     }
 
-    /* MODAL */
+    /* Theme toggle */
+    .theme-toggle {
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      border-radius: 20px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background 0.2s, opacity 0.2s;
+      white-space: nowrap;
+    }
+    .theme-toggle:hover { opacity: 0.85; }
+    .toggle-icon { font-size: 0.95rem; }
+
+    /* ── MODAL ── */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -77,24 +176,26 @@
     }
     .modal-overlay.open { display: flex; }
     .modal {
-      background: #fff;
-      border-radius: 12px;
+      background: var(--modal-bg);
+      border-radius: 14px;
       padding: 2rem;
       width: min(400px, 92vw);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.22);
       position: relative;
     }
-    .modal h2 { margin-bottom: 1.25rem; font-size: 1.3rem; }
-    .modal label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #333; }
+    .modal h2 { margin-bottom: 1.25rem; font-size: 1.3rem; color: var(--text-primary); }
+    .modal label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary); }
     .modal input {
       width: 100%;
       padding: 0.6rem 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      border: 1px solid var(--modal-input-border);
+      border-radius: 7px;
       font-size: 0.95rem;
       margin-bottom: 1rem;
+      background: var(--body-bg);
+      color: var(--text-primary);
     }
-    .modal input:focus { outline: 2px solid #e94560; border-color: transparent; }
+    .modal input:focus { outline: 2px solid var(--modal-input-focus); border-color: transparent; }
     .modal-error { color: #c0392b; font-size: 0.85rem; margin-bottom: 0.75rem; display: none; }
     .modal-close {
       position: absolute;
@@ -104,63 +205,63 @@
       cursor: pointer;
       background: none;
       border: none;
-      color: #666;
+      color: var(--text-secondary);
       line-height: 1;
     }
-    .modal-close:hover { color: #000; }
+    .modal-close:hover { color: var(--text-primary); }
     #login-submit {
       width: 100%;
       padding: 0.7rem;
-      background: #e94560;
-      color: #fff;
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
       border: none;
-      border-radius: 6px;
+      border-radius: 7px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
     }
     #login-submit:hover { opacity: 0.88; }
 
-    /* MAIN */
+    /* ── MAIN ── */
     main { max-width: 960px; margin: 2.5rem auto; padding: 0 1.5rem; }
-    main h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; }
-    .subtitle { color: #666; margin-bottom: 2rem; }
+    main h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; color: var(--text-primary); }
+    .subtitle { color: var(--text-secondary); margin-bottom: 2rem; }
 
     /* SUBJECT GROUP */
     .subject-group { margin-bottom: 3rem; }
     .subject-title {
       font-size: 1.4rem;
       font-weight: 700;
-      color: #1a1a2e;
-      border-bottom: 3px solid #e94560;
+      color: var(--text-primary);
+      border-bottom: 3px solid var(--subject-border);
       padding-bottom: 0.4rem;
       margin-bottom: 1.25rem;
     }
 
     .level-group { margin-bottom: 1.5rem; }
     .level-heading {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: #888;
+      color: var(--level-color);
       margin-bottom: 0.6rem;
     }
 
     /* GUIDE CARD */
     .guide-card {
-      background: #fff;
-      border-radius: 8px;
+      background: var(--card-bg);
+      border-radius: 9px;
       padding: 1rem 1.25rem;
       margin-bottom: 0.6rem;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      box-shadow: 0 1px 6px var(--card-shadow);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      transition: box-shadow 0.2s;
+      transition: box-shadow 0.2s, transform 0.2s;
     }
-    .guide-card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.12); }
+    .guide-card:hover { box-shadow: 0 4px 16px var(--card-shadow-hover); transform: translateY(-1px); }
     .guide-info { flex: 1; min-width: 0; }
     .guide-title {
       font-weight: 600;
@@ -168,8 +269,9 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: var(--text-primary);
     }
-    .guide-meta { font-size: 0.8rem; color: #888; margin-top: 0.15rem; }
+    .guide-meta { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem; }
 
     .badge {
       display: inline-block;
@@ -187,7 +289,7 @@
     .badge-default     { background: #e2e3e5; color: #383d41; }
 
     .pdf-link {
-      color: #e94560;
+      color: var(--pdf-link);
       text-decoration: none;
       font-size: 0.85rem;
       font-weight: 600;
@@ -195,20 +297,42 @@
     }
     .pdf-link:hover { text-decoration: underline; }
 
-    #loading { text-align: center; color: #888; padding: 3rem; }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.85rem;
+      color: var(--footer-text);
+      border-top: 1px solid var(--footer-border);
+      margin-top: 4rem;
+    }
+
+    #loading { text-align: center; color: var(--text-secondary); padding: 3rem; }
     #error-msg { color: #c0392b; text-align: center; padding: 2rem; display: none; }
+
+    /* ── Mobile ── */
+    @media (max-width: 540px) {
+      nav { padding: 0 1rem; }
+      .nav-brand { font-size: 1rem; }
+      .theme-toggle .toggle-label { display: none; }
+    }
   </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-brand" href="index.html">SHSID Peer Advisors</a>
+  <a class="nav-left" href="index.html">
+    <img class="nav-icon" src="/icon.png" alt="SHSID PA icon" />
+    <span class="nav-brand">SHSID Peer Advisors</span>
+  </a>
   <div class="nav-right">
     <a href="index.html">Home</a>
     <span id="upload-link-wrap" style="display:none">
       <a href="upload.html" class="btn btn-primary">Upload Guide</a>
     </span>
     <button id="login-btn" class="btn btn-outline">Login</button>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <span class="toggle-icon">🌸</span><span class="toggle-label">Pink</span>
+    </button>
   </div>
 </nav>
 
@@ -216,10 +340,10 @@
 <div class="modal-overlay" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal">
     <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
-    <h2 id="modal-title">Advisor Login</h2>
+    <h2 id="modal-title">Admin Login</h2>
     <div class="modal-error" id="login-error"></div>
-    <label for="login-email">Email</label>
-    <input type="email" id="login-email" autocomplete="email" placeholder="you@example.com" />
+    <label for="login-email">Account Name</label>
+    <input type="email" id="login-email" autocomplete="email" placeholder="your-account@example.com" />
     <label for="login-password">Password</label>
     <input type="password" id="login-password" autocomplete="current-password" placeholder="Password" />
     <button id="login-submit">Sign In</button>
@@ -370,6 +494,35 @@
   }
 
   loadGuides();
+
+  /* ── Theme toggle ── */
+  const toggleBtn = document.getElementById('theme-toggle');
+
+  function syncToggle() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    toggleBtn.innerHTML = isLight
+      ? '<span class="toggle-icon">☀️</span><span class="toggle-label">Light</span>'
+      : '<span class="toggle-icon">🌸</span><span class="toggle-label">Pink</span>';
+  }
+
+  syncToggle();
+
+  toggleBtn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('pa-theme', 'pink');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('pa-theme', 'light');
+    }
+    syncToggle();
+  });
 </script>
+
+<footer>
+  &copy; 2024 SHSID Peer Advisors &middot; All rights reserved
+</footer>
+
 </body>
 </html>
