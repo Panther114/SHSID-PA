@@ -206,17 +206,24 @@
       );
     }
 
+    const SEMESTER_PERIODS = [
+      { label: 'Semester 1 Midterms', value: 1, titlePrefix: 'Semester 1 Midterm' },
+      { label: 'Semester 1 Finals',   value: 2, titlePrefix: 'Semester 1 Final'   },
+      { label: 'Semester 2 Midterms', value: 3, titlePrefix: 'Semester 2 Midterm' },
+      { label: 'Semester 2 Finals',   value: 4, titlePrefix: 'Semester 2 Final'   },
+    ];
+
     /* ── Upload Form ── */
     function UploadForm({ token }) {
-      const [subjects,     setSubjects]     = useState([]);
-      const [subject,      setSubject]      = useState('');
-      const [level,        setLevel]        = useState('');
-      const [issueNumber,  setIssueNumber]  = useState('');
-      const [file,         setFile]         = useState(null);
-      const [dragging,     setDragging]     = useState(false);
-      const [submitting,   setSubmitting]   = useState(false);
-      const [error,        setError]        = useState('');
-      const [success,      setSuccess]      = useState('');
+      const [subjects,       setSubjects]       = useState([]);
+      const [subject,        setSubject]        = useState('');
+      const [level,          setLevel]          = useState('');
+      const [semesterPeriod, setSemesterPeriod] = useState('');
+      const [file,           setFile]           = useState(null);
+      const [dragging,       setDragging]       = useState(false);
+      const [submitting,     setSubmitting]     = useState(false);
+      const [error,          setError]          = useState('');
+      const [success,        setSuccess]        = useState('');
       const fileInputRef = useRef(null);
 
       useEffect(() => {
@@ -231,9 +238,11 @@
       // Reset level when subject changes
       useEffect(() => { setLevel(''); }, [subject]);
 
+      const selectedPeriod = SEMESTER_PERIODS.find(p => p.value === semesterPeriod);
+
       // Auto-generated title
-      const autoTitle = subject && level && issueNumber
-        ? `${subject} ${level} Issue ${issueNumber}`
+      const autoTitle = semesterPeriod && subject && level
+        ? `${selectedPeriod.titlePrefix} ${subject} ${level}`
         : '';
 
       const setFileFromDrop = useCallback((f) => {
@@ -254,12 +263,8 @@
       const onSubmit = async e => {
         e.preventDefault();
         setError(''); setSuccess('');
-        if (!subject || !level || !issueNumber || !file) {
+        if (!semesterPeriod || !subject || !level || !file) {
           setError('All fields are required.'); return;
-        }
-        const issueNum = parseInt(issueNumber, 10);
-        if (isNaN(issueNum) || issueNum < 1) {
-          setError('Issue number must be a positive integer.'); return;
         }
         if (!isTokenValid(token)) {
           setError('Your session has expired. Redirecting to guides…');
@@ -270,7 +275,7 @@
         fd.append('title', autoTitle);
         fd.append('subject', subject);
         fd.append('subject_level', level);
-        fd.append('issue_number', issueNum);
+        fd.append('issue_number', semesterPeriod);
         fd.append('pdf', file);
 
         setSubmitting(true);
@@ -283,7 +288,7 @@
           const data = await res.json();
           if (!res.ok) { setError(data.error || 'Upload failed.'); return; }
           setSuccess(`"${data.title}" uploaded successfully!`);
-          setSubject(''); setLevel(''); setIssueNumber(''); setFile(null);
+          setSubject(''); setLevel(''); setSemesterPeriod(''); setFile(null);
         } catch {
           setError('Network error. Please try again.');
         } finally {
@@ -333,18 +338,19 @@
           </div>
 
           <div className="form-field">
-            <label className="form-label" htmlFor="issue-number">Issue Number</label>
-            <input
-              id="issue-number"
-              className="form-input"
-              type="number"
-              min="1"
-              step="1"
-              placeholder="e.g. 4"
-              value={issueNumber}
-              onChange={e => setIssueNumber(e.target.value)}
+            <label className="form-label" htmlFor="semester-period">Semester Period</label>
+            <select
+              id="semester-period"
+              className="form-select"
+              value={semesterPeriod}
+              onChange={e => setSemesterPeriod(e.target.value ? Number(e.target.value) : '')}
               required
-            />
+            >
+              <option value="" disabled>Select a period</option>
+              {SEMESTER_PERIODS.map(p => (
+                <option key={p.value} value={p.value}>{p.label}</option>
+              ))}
+            </select>
           </div>
 
           {autoTitle && (

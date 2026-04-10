@@ -399,6 +399,14 @@
     const { useState, useEffect, useCallback, useMemo } = React;
     const { createRoot } = ReactDOM;
 
+    const SEMESTER_PERIODS = [
+      { label: 'Semester 1 Midterms', value: 1 },
+      { label: 'Semester 1 Finals',   value: 2 },
+      { label: 'Semester 2 Midterms', value: 3 },
+      { label: 'Semester 2 Finals',   value: 4 },
+    ];
+    const SEMESTER_PERIOD_LABEL = Object.fromEntries(SEMESTER_PERIODS.map(p => [p.value, p.label]));
+
     /* ── Helpers ── */
     function escHtml(str) {
       return String(str)
@@ -650,7 +658,7 @@
             onClick={() => setOpen(o => !o)}
             aria-expanded={open}
           >
-            <span className="issue-tab-title">Issue {issueNumber}</span>
+            <span className="issue-tab-title">{SEMESTER_PERIOD_LABEL[issueNumber] || `Issue ${issueNumber}`}</span>
             <span className={`issue-tab-arrow${open ? ' open' : ''}`}>▶</span>
           </button>
           {open && (
@@ -819,7 +827,7 @@
 
           <div className="page-header">
             <h1>Academic Guides</h1>
-            <p>Peer-written study guides, organized by issue, subject, and level.</p>
+            <p>Peer-written study guides, organized by semester, subject, and level.</p>
           </div>
 
           <div className="toolbar">

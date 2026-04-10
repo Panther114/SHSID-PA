@@ -105,9 +105,9 @@ router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), asyn
   }
 
   const issueNum = parseInt(issue_number, 10);
-  if (isNaN(issueNum) || issueNum < 1) {
+  if (![1, 2, 3, 4].includes(issueNum)) {
     fs.unlink(uploadedFilePath, () => {});
-    return res.status(400).json({ error: 'issue_number must be a positive integer' });
+    return res.status(400).json({ error: 'issue_number must be 1 (S1 Midterms), 2 (S1 Finals), 3 (S2 Midterms), or 4 (S2 Finals)' });
   }
 
   try {
