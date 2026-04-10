@@ -147,11 +147,9 @@ router.delete('/:id', guidesLimiter, authMiddleware, async (req, res) => {
     const { filename } = result.rows[0];
     try {
       const filePath = resolveUploadPath(filename);
-      fs.unlink(filePath, (err) => {
-        if (err) console.error('Failed to delete guide file:', err);
-      });
+      await fs.promises.unlink(filePath);
     } catch (err) {
-      console.error('Could not resolve path for deletion:', err);
+      console.error('Failed to delete guide file:', err);
     }
 
     res.json({ success: true });
