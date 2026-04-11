@@ -257,12 +257,13 @@
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const wrap = skylineRef.current;
         if (!wrap) return;
+        const PARALLAX_FACTOR = 0.1;
         let ticking = false;
         const onScroll = () => {
           if (ticking) return;
           ticking = true;
           window.requestAnimationFrame(() => {
-            if (wrap) wrap.style.transform = `translateY(${-window.scrollY * 0.1}px)`;
+            if (wrap) wrap.style.transform = `translateY(${-window.scrollY * PARALLAX_FACTOR}px)`;
             ticking = false;
           });
         };
@@ -313,10 +314,10 @@
           <div className="hero-skyline-wrap" ref={skylineRef} aria-hidden="true">
             <img className="hero-skyline-img skyline-dark"
               src="/images/hero/shanghai-skyline-dark.png"
-              alt="" draggable="false" />
+              alt="" role="presentation" draggable="false" />
             <img className="hero-skyline-img skyline-light"
               src="/images/hero/shanghai-skyline-light.png"
-              alt="" draggable="false" />
+              alt="" role="presentation" draggable="false" />
           </div>
 
           <div className="hero-content">
