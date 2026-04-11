@@ -156,14 +156,14 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 64px;
+  height: 68px;
   background: var(--nav-bg);
   border-bottom: 1px solid var(--nav-border);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   display: flex;
   align-items: center;
-  padding: 0 clamp(1rem, 3vw, 2rem);
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
   gap: 0.5rem;
   transition: background 0.3s, border-color 0.3s;
 }
@@ -171,23 +171,46 @@ nav {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   text-decoration: none;
   flex-shrink: 0;
+  padding-left: 0.85rem;
+  position: relative;
 }
 
+/* Geometric accent pillar — institutional identity mark */
+.nav-logo::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  background: var(--c-accent);
+  border-radius: 1px;
+  transition: height 0.2s ease;
+}
+.nav-logo:hover::before {
+  height: 26px;
+}
+
+/* Adaptive rectangular logo — preserves aspect ratio */
 .nav-icon-img {
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
-  object-fit: cover;
+  height: 28px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  display: block;
+  border-radius: 3px;
 }
 
 .nav-brand {
-  font-size: 0.93rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 800;
   color: var(--c-text);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -196,14 +219,16 @@ nav {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.15rem;
 }
 
 .nav-link {
-  padding: 0.38rem 0.72rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  padding: 0.35rem 0.72rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--c-text2);
   text-decoration: none;
   transition: color 0.15s, background 0.15s;
@@ -219,16 +244,17 @@ nav {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.48rem 1.05rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
   font-family: inherit;
   text-decoration: none;
   cursor: pointer;
   border: none;
-  transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
-  letter-spacing: -0.01em;
+  transition: all 0.15s cubic-bezier(0.4,0,0.2,1);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 .btn:active { transform: scale(0.97) !important; }
@@ -238,50 +264,50 @@ nav {
   color: #fff;
 }
 .btn-primary:hover {
-  filter: brightness(1.12);
-  box-shadow: 0 4px 24px var(--c-accent-glow);
-  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 28px var(--c-accent-glow);
+  transform: translateY(-2px);
 }
 
 .btn-ghost {
   background: transparent;
   color: var(--c-text2);
-  border: 1px solid var(--c-border);
+  border: 1.5px solid var(--c-border2);
 }
 .btn-ghost:hover {
   background: var(--c-surface2);
-  border-color: var(--c-border2);
-  color: var(--c-text);
-  transform: translateY(-1px);
+  border-color: var(--c-accent);
+  color: var(--c-accent2);
+  transform: translateY(-2px);
 }
 
 .btn-lg {
-  padding: 0.7rem 1.65rem;
-  font-size: 0.925rem;
-  border-radius: 10px;
+  padding: 0.75rem 1.85rem;
+  font-size: 0.78rem;
+  border-radius: 6px;
 }
 
 /* ── THEME TOGGLE ───────────────────────────────────── */
 .theme-btn {
   width: 34px;
   height: 34px;
-  border-radius: 7px;
-  border: 1px solid var(--c-border);
+  border-radius: 5px;
+  border: 1.5px solid var(--c-border2);
   background: var(--c-surface);
   color: var(--c-text2);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-family: inherit;
-  transition: all 0.18s ease;
-  margin-left: 0.2rem;
+  transition: all 0.15s ease;
+  margin-left: 0.3rem;
   flex-shrink: 0;
 }
 .theme-btn:hover {
-  background: var(--c-surface2);
-  border-color: var(--c-border2);
+  background: var(--c-accent-bg);
+  border-color: var(--c-accent);
   color: var(--c-text);
 }
 
@@ -289,12 +315,12 @@ nav {
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.2rem 0.55rem;
-  border-radius: 5px;
-  font-size: 0.68rem;
-  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: 3px;
+  font-size: 0.62rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   white-space: nowrap;
 }
 .badge-beginner     { background: var(--c-green-bg);  color: var(--c-green);  }
@@ -305,10 +331,10 @@ nav {
 /* ── FORM INPUTS ────────────────────────────────────── */
 .form-label {
   display: block;
-  font-size: 0.73rem;
-  font-weight: 600;
+  font-size: 0.66rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   color: var(--c-text2);
   margin-bottom: 0.35rem;
 }
@@ -317,8 +343,8 @@ nav {
   width: 100%;
   padding: 0.65rem 0.85rem;
   background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 9px;
+  border: 1.5px solid var(--input-border);
+  border-radius: 5px;
   color: var(--c-text);
   font-size: 0.9rem;
   font-family: inherit;
@@ -337,18 +363,19 @@ nav {
   background: var(--c-accent);
   color: #fff;
   border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  letter-spacing: -0.01em;
-  transition: filter 0.18s, transform 0.18s, box-shadow 0.18s;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: filter 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 .full-btn:hover {
   filter: brightness(1.1);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px var(--c-accent-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px var(--c-accent-glow);
 }
 .full-btn:disabled {
   opacity: 0.45;
@@ -361,16 +388,26 @@ nav {
 /* ── FOOTER ─────────────────────────────────────────── */
 footer {
   text-align: center;
-  padding: 3rem 2rem;
-  border-top: 1px solid var(--c-border);
+  padding: 3rem 2rem 4rem;
+  border-top: 3px solid var(--c-accent);
   color: var(--c-text3);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   margin-top: 6rem;
+}
+footer::before {
+  content: 'SHSID PA';
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+  margin-bottom: 0.75rem;
 }
 
 /* ── MOBILE ─────────────────────────────────────────── */
 @media (max-width: 600px) {
-  nav { padding: 0 1rem; }
+  nav { padding: 0 1rem; height: 60px; }
   .nav-brand { display: none; }
-  .btn-lg { padding: 0.65rem 1.3rem; }
+  .btn-lg { padding: 0.65rem 1.35rem; }
 }
