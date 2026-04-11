@@ -2,14 +2,28 @@
 
 require('dotenv').config();
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 
 // Trigger DB migration on startup
 require('./db');
 
 const app = express();
+let iconBuffer;
+try {
+  iconBuffer = fs.readFileSync(path.join(__dirname, 'icon.png'));
+} catch (err) {
+  console.error('Failed to load icon.png:', err);
+}
 
 app.use(express.json());
+app.get('/icon.png', (_req, res) => {
+  if (!iconBuffer) {
+    return res.status(404).end();
+  }
+  res.set('Cache-Control', 'public, max-age=31536000, immutable');
+  res.type('png').send(iconBuffer);
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', require('./routes/auth'));
