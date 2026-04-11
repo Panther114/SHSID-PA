@@ -189,7 +189,8 @@
     function parseJwt(token) {
       try {
         const b64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-        return JSON.parse(atob(b64));
+        const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+        return JSON.parse(atob(padded));
       } catch { return null; }
     }
     function isTokenValid(token) {
@@ -255,10 +256,17 @@
       const fileInputRef = useRef(null);
 
       useEffect(() => {
-        fetch('/subjects.json')
-          .then(r => r.json())
+        const ac = new AbortController();
+        fetch('/subjects.json', { signal: ac.signal })
+          .then(r => {
+            if (!r.ok) throw new Error('Failed to fetch subjects');
+            return r.json();
+          })
           .then(data => setSubjects(data.subjects || []))
-          .catch(() => setError('Failed to load subjects list.'));
+          .catch((err) => {
+            if (err.name !== 'AbortError') setError('Failed to load subjects list.');
+          });
+        return () => ac.abort();
       }, []);
 
       const availableLevels = subjects.find(s => s.name === subject)?.levels || [];
@@ -270,14 +278,20 @@
 
       // Auto-generated title
       const autoTitle = semesterPeriod && subject && level
+        && selectedPeriod
         ? `${selectedPeriod.titlePrefix} ${subject} ${level}`
         : '';
 
       const setFileFromDrop = useCallback((f) => {
-        if (f && f.type === 'application/pdf') {
+        const isPdf = f && (
+          f.type === 'application/pdf' ||
+          (typeof f.name === 'string' && f.name.toLowerCase().endsWith('.pdf'))
+        );
+        if (isPdf) {
           setFile(f);
           setError('');
         } else if (f) {
+          setFile(null);
           setError('Only PDF files are accepted.');
         }
       }, []);
@@ -401,7 +415,7 @@
             <div
               className={`drop-zone${dragging ? ' drag-over' : ''}${file ? ' has-file' : ''}`}
               onClick={() => fileInputRef.current && fileInputRef.current.click()}
-              onDragOver={e => { e.preventDefault(); setDragging(true); }}
+              onDragOver={e => { e.preventDefault(); if (!dragging) setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={onDrop}
               role="button"
@@ -437,7 +451,8 @@
     function Footer() {
       return (
         <footer>
-          <div>© 2026 JL SHSID PA</div>
+          <div>2026 SHSID PA</div>
+          <div style={{marginTop:'0.25rem', fontSize:'0.8rem', opacity:0.7}}>Site by Gavin Yu</div>
           <div style={{marginTop:'0.4rem', fontSize:'0.8rem', opacity:0.7}}>
             Guides are licensed under{' '}
             <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"
