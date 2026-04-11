@@ -2,16 +2,18 @@
 
 require('dotenv').config();
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 
 // Trigger DB migration on startup
 require('./db');
 
 const app = express();
+const iconBuffer = fs.readFileSync(path.join(__dirname, 'icon.png'));
 
 app.use(express.json());
 app.get('/icon.png', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'icon.png'));
+  res.type('png').send(iconBuffer);
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
