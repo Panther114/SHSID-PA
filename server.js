@@ -21,7 +21,7 @@ app.get('/icon.png', (_req, res) => {
   if (!iconBuffer) {
     return res.status(404).end();
   }
-  res.set('Cache-Control', 'public, max-age=31536000, immutable');
+  res.set('Cache-Control', 'public, max-age=86400, must-revalidate');
   res.type('png').send(iconBuffer);
 });
 app.use(express.static(path.join(__dirname, 'public')));
