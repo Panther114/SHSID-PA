@@ -411,3 +411,239 @@ footer::before {
   .nav-brand { display: none; }
   .btn-lg { padding: 0.65rem 1.35rem; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   PREMIUM VISUAL SYSTEM — Reusable across all pages
+   Add these classes to any future page for consistent
+   premium design language.
+   ═══════════════════════════════════════════════════════ */
+
+/* ── GLASS CARD (interactive surface) ───────────────── */
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 18px;
+  transition: background 0.22s ease, border-color 0.22s ease,
+              transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.28s ease;
+}
+.glass-card:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-border);
+  transform: translateY(-5px);
+  box-shadow: 0 14px 48px rgba(0,0,0,0.16);
+}
+[data-theme="light"] .glass-card:hover { box-shadow: 0 14px 48px rgba(0,0,0,0.08); }
+[data-theme="pink"]  .glass-card:hover { box-shadow: 0 14px 48px rgba(233,30,140,0.1); }
+
+/* ── GLASS PANEL (static container) ─────────────────── */
+.glass-panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-radius: 14px;
+}
+
+/* ── HOVER LIFT WITH SPRING EASING ──────────────────── */
+.pa-lift {
+  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.22s ease;
+}
+.pa-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.13);
+}
+[data-theme="light"] .pa-lift:hover { box-shadow: 0 10px 36px rgba(0,0,0,0.07); }
+[data-theme="pink"]  .pa-lift:hover { box-shadow: 0 10px 36px rgba(233,30,140,0.09); }
+.pa-lift:active { transform: scale(0.97) translateY(-1px) !important; }
+
+/* ── FLOATING KEYFRAMES ──────────────────────────────── */
+@keyframes floatY {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes floatY2 {
+  0%,100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-10px) rotate(4deg); }
+}
+@keyframes glowPulse {
+  0%,100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 0.72; transform: scale(1.1); }
+}
+@keyframes chipAppear {
+  from { opacity: 0; transform: translateY(16px) scale(0.8); }
+  to   { opacity: 0.75; transform: translateY(0) scale(1); }
+}
+
+/* ── DECORATIVE FLOATING ICON CHIPS ─────────────────── */
+.deco-chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  z-index: 0;
+  animation: chipAppear 0.7s ease forwards, floatY 7s ease-in-out infinite;
+}
+.deco-chip-sm {
+  width: 38px;
+  height: 38px;
+  font-size: 0.9rem;
+  border-radius: 9px;
+}
+@media (max-width: 600px) { .deco-chip { display: none !important; } }
+
+/* ── GLOWING AMBIENT ORB ─────────────────────────────── */
+.pa-glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 0;
+  animation: glowPulse 9s ease-in-out infinite;
+}
+
+/* ── SKYLINE IMAGE — homepage hero only ──────────────── */
+.hero-skyline-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-skyline-img {
+  width: 100%;
+  max-width: 1600px;
+  max-height: 300px;
+  object-fit: contain;
+  object-position: bottom center;
+  display: block;
+  will-change: transform;
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.45) 45%, transparent 82%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.45) 45%, transparent 82%);
+}
+/* Theme-aware skyline visibility */
+.hero-skyline-img.skyline-dark  { display: block; }
+.hero-skyline-img.skyline-light { display: none;  }
+[data-theme="light"] .hero-skyline-img.skyline-dark  { display: none;  }
+[data-theme="light"] .hero-skyline-img.skyline-light { display: block; }
+[data-theme="pink"]  .hero-skyline-img.skyline-dark  { display: none;  }
+[data-theme="pink"]  .hero-skyline-img.skyline-light { display: block; }
+@media (max-width: 768px) { .hero-skyline-img { max-height: 200px; } }
+@media (max-width: 480px) { .hero-skyline-img { max-height: 130px; } }
+
+/* ── GLASSMORPHISM EMPTY STATE FRAME ─────────────────── */
+.empty-state-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 4rem 2.5rem 5rem;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border2);
+  border-radius: 24px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  max-width: 440px;
+  margin: 2rem auto;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.empty-state-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 25%, var(--c-accent-bg) 0%, transparent 65%);
+  pointer-events: none;
+}
+.empty-state-illustration {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: var(--c-accent-bg);
+  border: 1px solid var(--c-border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.empty-state-text {
+  position: relative;
+  z-index: 1;
+}
+.empty-state-text .state-msg-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 0.45rem;
+}
+.empty-state-text > div:not(.state-msg-title) {
+  font-size: 0.9rem;
+  color: var(--c-text2);
+  line-height: 1.65;
+}
+
+/* ── UPLOAD PAGE AMBIENT BACKGROUND ─────────────────── */
+.upload-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+.upload-bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  will-change: transform;
+}
+.upload-bg-blob-1 {
+  width: 500px; height: 500px;
+  background: rgba(139,92,246,0.11);
+  top: -150px; right: -130px;
+  animation: drift1 24s ease-in-out infinite;
+}
+.upload-bg-blob-2 {
+  width: 400px; height: 400px;
+  background: rgba(59,130,246,0.08);
+  bottom: -80px; left: -90px;
+  animation: drift2 20s ease-in-out infinite;
+}
+[data-theme="light"] .upload-bg-blob-1 { background: rgba(99,102,241,0.07); }
+[data-theme="light"] .upload-bg-blob-2 { background: rgba(37,99,235,0.05);  }
+[data-theme="pink"]  .upload-bg-blob-1 { background: rgba(240,98,146,0.11); }
+[data-theme="pink"]  .upload-bg-blob-2 { background: rgba(255,183,77,0.09); }
+
+/* ── REDUCED MOTION ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-blob, .guide-hero-blob, .pa-glow-orb,
+  .upload-bg-blob { animation: none !important; }
+  .deco-chip { animation: none !important; opacity: 0 !important; }
+  .pa-lift:hover, .glass-card:hover { transform: none !important; }
+  .hero-skyline-img { will-change: auto; }
+}

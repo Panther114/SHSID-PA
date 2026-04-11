@@ -316,7 +316,8 @@
       border: 1px solid var(--card-border);
       border-radius: 6px;
       margin-bottom: 0.35rem;
-      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+      transition: background 0.18s ease, border-color 0.18s ease,
+                  transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
       position: relative;
       overflow: hidden;
     }
@@ -338,7 +339,10 @@
       background: var(--card-hover-bg);
       border-color: var(--card-hover-border);
       transform: translateX(4px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
     }
+    [data-theme="light"] .guide-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
+    [data-theme="pink"]  .guide-card:hover { box-shadow: 0 6px 24px rgba(233,30,140,0.08); }
     .guide-info { flex: 1; min-width: 0; }
     .guide-title {
       font-size: 0.88rem;
@@ -638,6 +642,15 @@
           <div className="guide-hero-blob gh-blob-1" aria-hidden="true" />
           <div className="guide-hero-blob gh-blob-2" aria-hidden="true" />
           <div className="guide-hero-grid" aria-hidden="true" />
+          {/* Floating decorative chips */}
+          <div className="deco-chip" aria-hidden="true"
+            style={{top:'22%', right:'8%', animationDelay:'0.4s', animationDuration:'8s'}}>
+            📚
+          </div>
+          <div className="deco-chip deco-chip-sm" aria-hidden="true"
+            style={{bottom:'18%', left:'7%', animationDelay:'0.8s', animationDuration:'9.5s'}}>
+            ✏️
+          </div>
           <div className="guide-hero-content">
             <div className="guide-hero-eyebrow">
               <span className="guide-hero-eyebrow-dot" />
@@ -885,9 +898,12 @@
       if (sortedIssues.length === 0) {
         return (
           <div className="guides-content">
-            <div className="state-msg">
-              <div className="state-msg-title">No guides found</div>
-              <div>Try adjusting your search.</div>
+            <div className="empty-state-frame state-msg">
+              <div className="empty-state-illustration" aria-hidden="true">🔍</div>
+              <div className="empty-state-text">
+                <div className="state-msg-title">No guides found</div>
+                <div>Try adjusting your search.</div>
+              </div>
             </div>
           </div>
         );
@@ -1018,9 +1034,14 @@
             </div>
           )}
           {!loading && !error && guides.length === 0 && (
-            <div className="state-msg">
-              <div className="state-msg-title">No guides yet</div>
-              <div>Check back soon — new guides are added regularly.</div>
+            <div className="guides-content">
+              <div className="empty-state-frame state-msg">
+                <div className="empty-state-illustration" aria-hidden="true">📖</div>
+                <div className="empty-state-text">
+                  <div className="state-msg-title">No guides yet</div>
+                  <div>Check back soon — new guides are added regularly.</div>
+                </div>
+              </div>
             </div>
           )}
           {!loading && !error && guides.length > 0 && (

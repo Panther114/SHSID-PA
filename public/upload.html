@@ -34,6 +34,16 @@
       border-radius: 18px;
       padding: 2rem;
       margin-bottom: 1.25rem;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      transition: box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+    .form-card:focus-within {
+      border-color: var(--c-border2);
+      box-shadow: 0 0 0 1px var(--c-border2), 0 8px 32px rgba(0,0,0,0.08);
+    }
+    [data-theme="pink"] .form-card:focus-within {
+      box-shadow: 0 0 0 1px var(--c-border2), 0 8px 32px rgba(233,30,140,0.06);
     }
     .form-field { margin-bottom: 1.1rem; }
     .form-row {
@@ -446,6 +456,10 @@
 
       return (
         <>
+          <div className="upload-bg" aria-hidden="true">
+            <div className="upload-bg-blob upload-bg-blob-1" />
+            <div className="upload-bg-blob upload-bg-blob-2" />
+          </div>
           <Nav theme={theme} onToggle={toggle} />
           <div className="upload-page">
             <div className="upload-header">
