@@ -4,13 +4,132 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Guides – SHSID Peer Advisors</title>
-  <link rel="icon" type="image/png" href="/icon.png" />
+  <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
   <script>(function(){var t=localStorage.getItem('pa-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');else if(t==='pink')document.documentElement.setAttribute('data-theme','pink');})()</script>
   <style>
+    /* ── GUIDE HERO ── */
+    .guide-hero {
+      position: relative;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--c-border);
+    }
+    .guide-hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      will-change: transform;
+    }
+    .gh-blob-1 {
+      width: 600px; height: 600px;
+      background: rgba(139,92,246,0.22);
+      top: -160px; left: -160px;
+      animation: ghDrift1 22s ease-in-out infinite;
+    }
+    .gh-blob-2 {
+      width: 450px; height: 450px;
+      background: rgba(59,130,246,0.16);
+      bottom: -80px; right: -100px;
+      animation: ghDrift2 18s ease-in-out infinite;
+    }
+    [data-theme="light"] .gh-blob-1 { background: rgba(99,102,241,0.11); }
+    [data-theme="light"] .gh-blob-2 { background: rgba(37,99,235,0.07); }
+    [data-theme="pink"]  .gh-blob-1 { background: rgba(240,98,146,0.18); }
+    [data-theme="pink"]  .gh-blob-2 { background: rgba(255,183,77,0.14); }
+    @keyframes ghDrift1 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(60px,45px) scale(1.1); }
+    }
+    @keyframes ghDrift2 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(-45px,-60px) scale(0.9); }
+    }
+    .guide-hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, var(--c-border2) 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.28;
+      pointer-events: none;
+    }
+    [data-theme="light"] .guide-hero-grid { opacity: 0.16; }
+    [data-theme="pink"]  .guide-hero-grid { opacity: 0.2; }
+    .guide-hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .guide-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.28rem 0.9rem;
+      border-radius: 3px;
+      background: var(--c-accent-bg);
+      border: 1px solid rgba(139,92,246,0.22);
+      color: var(--c-accent2);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    [data-theme="light"] .guide-hero-eyebrow { border-color: rgba(99,102,241,0.2); }
+    [data-theme="pink"]  .guide-hero-eyebrow { border-color: rgba(233,30,140,0.22); }
+    .guide-hero-eyebrow-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--c-accent2);
+      flex-shrink: 0;
+    }
+    .guide-hero-title {
+      font-size: clamp(2.5rem, 7vw, 4.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      color: var(--c-text);
+      margin-bottom: 1rem;
+    }
+    .guide-hero-accent-bar {
+      width: 48px;
+      height: 4px;
+      background: var(--c-accent);
+      border-radius: 2px;
+      margin: 1rem auto 1.25rem;
+    }
+    .guide-hero-grad {
+      background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 40%, #818cf8 70%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    [data-theme="light"] .guide-hero-grad {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 60%, #4338ca 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    [data-theme="pink"] .guide-hero-grad {
+      background: linear-gradient(135deg, #e91e8c 0%, #f06292 50%, #f48fb1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .guide-hero-sub {
+      font-size: 1rem;
+      color: var(--c-text2);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
     /* ── PAGE HEADER ── */
     .page-header {
       max-width: 1100px;
@@ -58,8 +177,8 @@
       width: 100%;
       padding: 0.62rem 0.85rem 0.62rem 2.2rem;
       background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: 9px;
+      border: 1.5px solid var(--input-border);
+      border-radius: 5px;
       color: var(--c-text);
       font-size: 0.875rem;
       font-family: inherit;
@@ -74,10 +193,12 @@
 
     .filter-chip {
       padding: 0.42rem 0.85rem;
-      border-radius: 7px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      border: 1px solid var(--c-border);
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 1.5px solid var(--c-border2);
       background: var(--c-surface);
       color: var(--c-text2);
       cursor: pointer;
@@ -104,7 +225,7 @@
     .issue-tab {
       margin-bottom: 0.85rem;
       border: 1px solid var(--card-border);
-      border-radius: 14px;
+      border-radius: 8px;
       overflow: hidden;
       transition: border-color 0.2s;
     }
@@ -124,10 +245,11 @@
     }
     .issue-tab-header:hover { background: var(--card-hover-bg); }
     .issue-tab-title {
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: 0.82rem;
+      font-weight: 800;
       color: var(--c-text);
-      letter-spacing: -0.02em;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
     .issue-tab-arrow {
       font-size: 0.75rem;
@@ -192,14 +314,30 @@
       padding: 0.8rem 1rem;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: 6px;
       margin-bottom: 0.35rem;
       transition: background 0.15s, border-color 0.15s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Left accent rail — slides in on hover */
+    .guide-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--c-accent);
+      transform: scaleY(0);
+      transition: transform 0.15s ease;
+      border-radius: 0 2px 2px 0;
+    }
+    .guide-card:hover::before {
+      transform: scaleY(1);
     }
     .guide-card:hover {
       background: var(--card-hover-bg);
       border-color: var(--card-hover-border);
-      transform: translateX(3px);
+      transform: translateX(4px);
     }
     .guide-info { flex: 1; min-width: 0; }
     .guide-title {
@@ -227,11 +365,13 @@
       align-items: center;
       gap: 0.28rem;
       padding: 0.3rem 0.75rem;
-      border-radius: 7px;
+      border-radius: 4px;
       background: var(--c-accent-bg);
       color: var(--c-accent2);
-      font-size: 0.73rem;
-      font-weight: 600;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       text-decoration: none;
       border: 1px solid rgba(139,92,246,0.16);
       transition: all 0.15s;
@@ -247,11 +387,13 @@
       align-items: center;
       gap: 0.28rem;
       padding: 0.3rem 0.75rem;
-      border-radius: 7px;
+      border-radius: 4px;
       background: var(--c-red-bg);
       color: var(--c-red);
-      font-size: 0.73rem;
-      font-weight: 600;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       border: 1px solid rgba(239,68,68,0.2);
       cursor: pointer;
       font-family: inherit;
@@ -328,11 +470,11 @@
     .modal {
       background: var(--modal-bg);
       border: 1px solid var(--c-border2);
-      border-radius: 20px;
+      border-radius: 12px;
       padding: 2rem;
       width: min(440px, 100%);
       box-shadow: var(--modal-shadow);
-      animation: slideUp 0.24s cubic-bezier(0.34,1.56,0.64,1);
+      animation: slideUp 0.22s cubic-bezier(0.34,1.56,0.64,1);
       position: relative;
     }
     @keyframes slideUp {
@@ -379,6 +521,9 @@
     }
 
     @media (max-width: 540px) {
+      .guide-hero { padding: 3.5rem 1.25rem 3rem; }
+      .gh-blob-1 { width: 280px; height: 280px; }
+      .gh-blob-2 { width: 220px; height: 220px; }
       .guide-card { flex-wrap: wrap; }
       .guide-title { white-space: normal; }
       .toolbar { flex-direction: column; align-items: stretch; }
@@ -463,7 +608,7 @@
       return (
         <nav>
           <a href="/index.html" className="nav-logo">
-            <img src="/icon.png" alt="PA" className="nav-icon-img" />
+            <img src="/logo.png" alt="PA" className="nav-icon-img" />
             <span className="nav-brand">SHSID Peer Advisors</span>
           </a>
           <div className="nav-spacer" />
@@ -483,6 +628,31 @@
             </button>
           </div>
         </nav>
+      );
+    }
+
+    /* ── GuideHero ── */
+    function GuideHero() {
+      return (
+        <section className="guide-hero">
+          <div className="guide-hero-blob gh-blob-1" aria-hidden="true" />
+          <div className="guide-hero-blob gh-blob-2" aria-hidden="true" />
+          <div className="guide-hero-grid" aria-hidden="true" />
+          <div className="guide-hero-content">
+            <div className="guide-hero-eyebrow">
+              <span className="guide-hero-eyebrow-dot" />
+              Official SHSID PA Website
+            </div>
+            <h1 className="guide-hero-title">
+              Academic Guides<br />
+              <span className="guide-hero-grad">by Your Peers</span>
+            </h1>
+            <div className="guide-hero-accent-bar" aria-hidden="true" />
+            <p className="guide-hero-sub">
+              Peer-written study guides, organized by semester, subject, and level.
+            </p>
+          </div>
+        </section>
       );
     }
 
@@ -825,10 +995,7 @@
             <LoginModal onClose={() => setShowModal(false)} onSuccess={login} />
           )}
 
-          <div className="page-header">
-            <h1>Academic Guides</h1>
-            <p>Peer-written study guides, organized by semester, subject, and level.</p>
-          </div>
+          <GuideHero />
 
           <div className="toolbar">
             <div className="search-wrap">
