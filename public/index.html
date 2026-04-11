@@ -227,6 +227,7 @@
     function removeSkylineBg(imgEl) {
       if (!imgEl || !imgEl.complete || !imgEl.naturalWidth) return;
       // Check if image already has meaningful transparency → skip
+      // Alpha < 240 (out of 255) signals existing transparency
       var testC = document.createElement('canvas');
       testC.width = 1; testC.height = 1;
       testC.getContext('2d').drawImage(imgEl, 0, 0, 1, 1);
@@ -246,6 +247,8 @@
         var bgR = pts.reduce(function(s,c){return s+c[0];},0) / pts.length;
         var bgG = pts.reduce(function(s,c){return s+c[1];},0) / pts.length;
         var bgB = pts.reduce(function(s,c){return s+c[2];},0) / pts.length;
+        // THRESH: max color distance (Euclidean in RGB) to classify as background.
+        // FEATHER: width of the transition zone for smooth anti-aliased edges.
         var THRESH = 42, FEATHER = 22;
         for (var i = 0; i < d.length; i += 4) {
           var dist = Math.sqrt(
