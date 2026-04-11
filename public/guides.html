@@ -58,6 +58,15 @@
       opacity: 0.28;
       pointer-events: none;
     }
+    /* Grain overlay on guide hero */
+    .guide-hero-grain {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.15'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
     [data-theme="light"] .guide-hero-grid { opacity: 0.16; }
     [data-theme="pink"]  .guide-hero-grid { opacity: 0.2; }
     .guide-hero-content {
@@ -642,6 +651,7 @@
           <div className="guide-hero-blob gh-blob-1" aria-hidden="true" />
           <div className="guide-hero-blob gh-blob-2" aria-hidden="true" />
           <div className="guide-hero-grid" aria-hidden="true" />
+          <div className="guide-hero-grain" aria-hidden="true" />
           {/* Floating decorative chips */}
           <div className="deco-chip" aria-hidden="true"
             style={{top:'22%', right:'8%', animationDelay:'0.4s', animationDuration:'8s'}}>
@@ -651,7 +661,7 @@
             style={{bottom:'18%', left:'7%', animationDelay:'0.8s', animationDuration:'9.5s'}}>
             ✏️
           </div>
-          <div className="guide-hero-content">
+          <div className="guide-hero-content pa-reveal pa-stagger-1">
             <div className="guide-hero-eyebrow">
               <span className="guide-hero-eyebrow-dot" />
               Official SHSID PA Website
@@ -754,7 +764,7 @@
     }
 
     /* ── Guide Card ── */
-    function GuideCard({ guide, authed, token, onRemove }) {
+    function GuideCard({ guide, idx, authed, token, onRemove }) {
       const [confirming, setConfirming] = useState(false);
       const [removing,   setRemoving]   = useState(false);
 
@@ -780,7 +790,9 @@
       };
 
       return (
-        <div className="guide-card">
+        <div className="guide-card pa-reveal"
+          style={{transitionDelay: `${(idx||0) * 0.04}s`}}
+        >
           <div className="guide-info">
             <div className="guide-title">{guide.title}</div>
           </div>
@@ -864,7 +876,7 @@
                               fontStyle: 'italic',
                             }}>No guide available</div>
                           ) : (
-                            levelGuides.map(g => <GuideCard key={g.id} guide={g} authed={authed} token={token} onRemove={onRemove} />)
+                            levelGuides.map((g, cardIdx) => <GuideCard key={g.id} guide={g} idx={cardIdx} authed={authed} token={token} onRemove={onRemove} />)
                           )}
                         </div>
                       );
@@ -1054,6 +1066,26 @@
     }
 
     createRoot(document.getElementById('root')).render(<App />);
+  <script>
+    (function(){
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting){ e.target.classList.add('pa-visible'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      function watchReveal(root){
+        (root.querySelectorAll ? root : document).querySelectorAll('.pa-reveal').forEach(function(el){ io.observe(el); });
+      }
+      watchReveal(document);
+      new MutationObserver(function(ms){
+        ms.forEach(function(m){
+          m.addedNodes.forEach(function(n){
+            if (n.nodeType===1){ if(n.classList&&n.classList.contains('pa-reveal')) io.observe(n); watchReveal(n); }
+          });
+        });
+      }).observe(document.body, { childList: true, subtree: true });
+    })();
   </script>
 </body>
 </html>
