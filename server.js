@@ -17,7 +17,6 @@ try {
 }
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 app.get('/icon.png', (_req, res) => {
   if (!iconBuffer) {
     return res.status(404).end();
@@ -25,6 +24,7 @@ app.get('/icon.png', (_req, res) => {
   res.set('Cache-Control', 'public, max-age=31536000, immutable');
   res.type('png').send(iconBuffer);
 });
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/guides', require('./routes/guides'));
