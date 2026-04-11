@@ -10,6 +10,9 @@ require('./db');
 const app = express();
 
 app.use(express.json());
+app.get('/icon.png', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'icon.png'));
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', require('./routes/auth'));
