@@ -166,12 +166,31 @@
       align-items: center;
       gap: 0.6rem;
       flex-wrap: wrap;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 14px;
+      backdrop-filter: blur(12px) saturate(125%);
+      -webkit-backdrop-filter: blur(12px) saturate(125%);
+      position: sticky;
+      top: 76px;
+      z-index: 50;
     }
     .search-wrap {
       position: relative;
       flex: 1;
       min-width: 180px;
     }
+    .search-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 6px;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 0 0 1px var(--c-accent2), 0 0 32px var(--c-accent-glow);
+      transition: opacity 0.2s ease;
+    }
+    .search-wrap:focus-within::after { opacity: 0.55; }
     .search-icon {
       position: absolute;
       left: 0.75rem;
@@ -236,8 +255,14 @@
       border: 1px solid var(--card-border);
       border-radius: 8px;
       overflow: hidden;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
+    .issue-tab.open {
+      border-color: var(--card-hover-border);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+    [data-theme="light"] .issue-tab.open { box-shadow: 0 8px 30px rgba(0,0,0,0.05); }
+    [data-theme="pink"]  .issue-tab.open { box-shadow: 0 8px 30px rgba(233,30,140,0.08); }
     .issue-tab-header {
       display: flex;
       align-items: center;
@@ -271,6 +296,11 @@
       padding: 0.75rem 1.25rem 1.25rem;
       background: var(--c-bg);
       border-top: 1px solid var(--card-border);
+      animation: issueBodyIn 0.26s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes issueBodyIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* ── GUIDES CONTENT ── */
@@ -347,11 +377,24 @@
     .guide-card:hover {
       background: var(--card-hover-bg);
       border-color: var(--card-hover-border);
-      transform: translateX(4px);
+      transform: translateX(4px) translateY(-1px);
       box-shadow: 0 6px 24px rgba(0,0,0,0.1);
     }
     [data-theme="light"] .guide-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
     [data-theme="pink"]  .guide-card:hover { box-shadow: 0 6px 24px rgba(233,30,140,0.08); }
+    .guide-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 46%;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.24) 50%, transparent 100%);
+      transform: skewX(-18deg);
+      transition: left 0.55s ease;
+    }
+    .guide-card:hover::after { left: 130%; }
     .guide-info { flex: 1; min-width: 0; }
     .guide-title {
       font-size: 0.88rem;
@@ -541,8 +584,12 @@
       .guide-title { white-space: normal; }
       .toolbar { flex-direction: column; align-items: stretch; }
       .page-header { padding: 2.5rem 1.25rem 1rem; }
-      .toolbar { padding: 0.75rem 1.25rem; }
+      .toolbar { padding: 0.75rem 1.25rem; top: 68px; border-radius: 10px; }
       .guides-content { padding: 0.5rem 1.25rem 2rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .issue-tab-body { animation: none !important; }
+      .guide-card::after { transition: none !important; }
     }
   </style>
 </head>
@@ -650,6 +697,18 @@
         <section className="guide-hero">
           <div className="guide-hero-blob gh-blob-1" aria-hidden="true" />
           <div className="guide-hero-blob gh-blob-2" aria-hidden="true" />
+          <div className="pa-glow-orb" aria-hidden="true" style={{
+            width: '190px', height: '190px',
+            background: 'var(--c-accent-glow)',
+            top: '14%', left: '13%',
+            animationDelay: '0.2s', animationDuration: '10s'
+          }} />
+          <div className="pa-glow-orb" aria-hidden="true" style={{
+            width: '140px', height: '140px',
+            background: 'var(--c-blue-bg)',
+            bottom: '15%', right: '17%',
+            animationDelay: '2.3s', animationDuration: '11.5s'
+          }} />
           <div className="guide-hero-grid" aria-hidden="true" />
           <div className="guide-hero-grain" aria-hidden="true" />
           {/* Floating decorative chips */}
@@ -847,7 +906,7 @@
       }, [filteredGuides]);
 
       return (
-        <div className="issue-tab">
+        <div className={`issue-tab${open ? ' open' : ''}`}>
           <button
             className="issue-tab-header"
             onClick={() => setOpen(o => !o)}
