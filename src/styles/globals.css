@@ -41,6 +41,13 @@
 
   --modal-bg:            #141414;
   --modal-shadow:        0 24px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.07);
+  --theme-btn-hover-rotate: -8deg;
+  --modal-visual-min-width: 180px;
+  --modal-image-offset-x: -8%;
+  --modal-image-width: 116%;
+  --modal-max-width: 760px;
+  --modal-mobile-max-width: 460px;
+  --mobile-hover-lift: -2px;
 
   --scroll-thumb:        rgba(255,255,255,0.1);
   --scroll-thumb-hover:  rgba(255,255,255,0.2);
@@ -442,7 +449,7 @@ nav::after {
   border-color: var(--c-accent);
   color: var(--c-text);
   box-shadow: 0 0 0 2px var(--c-accent-bg), 0 0 24px var(--c-accent-glow);
-  transform: translateY(-2px) rotate(-8deg) scale(1.06);
+  transform: translateY(-2px) scale(1.06);
 }
 
 /* ── BADGES ─────────────────────────────────────────── */
@@ -1470,14 +1477,14 @@ footer::before {
   border: 1px solid var(--c-border2);
   border-radius: 12px;
   padding: 0;
-  width: min(760px, 100%);
+  width: min(var(--modal-max-width), 100%);
   box-shadow: var(--modal-shadow);
   position: relative;
   overflow: hidden;
 }
 .modal-inner {
   display: grid;
-  grid-template-columns: minmax(180px, 250px) 1fr;
+  grid-template-columns: minmax(var(--modal-visual-min-width), 250px) 1fr;
   min-height: 320px;
 }
 .modal-visual {
@@ -1496,9 +1503,9 @@ footer::before {
 }
 .modal-visual-image {
   position: absolute;
-  left: -8%;
+  left: var(--modal-image-offset-x);
   bottom: 0;
-  width: 116%;
+  width: var(--modal-image-width);
   max-width: none;
   object-fit: contain;
   opacity: 0.9;
@@ -1546,7 +1553,7 @@ footer::before {
 
 @media (max-width: 720px) {
   .modal {
-    width: min(460px, 100%);
+    width: min(var(--modal-mobile-max-width), 100%);
   }
   .modal-inner {
     grid-template-columns: 1fr;
@@ -1759,13 +1766,22 @@ footer::before {
 @media (max-width: 600px) {
   .btn::after, .full-btn::after { display: none; }
   .theme-btn:hover { box-shadow: none; }
+  .theme-btn:hover {
+    transform: translateY(var(--mobile-hover-lift)) scale(1.03);
+  }
   .guide-card:hover,
   .glass-card:hover,
   .pa-lift:hover {
-    transform: translateY(-2px);
+    transform: translateY(var(--mobile-hover-lift));
   }
   .modal-visual {
     min-height: 102px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 601px) {
+  .theme-btn:hover {
+    transform: translateY(-2px) rotate(var(--theme-btn-hover-rotate)) scale(1.06);
   }
 }
 

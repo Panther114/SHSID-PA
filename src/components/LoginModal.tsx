@@ -6,6 +6,9 @@ interface LoginModalProps {
   onSuccess: (token: string) => void;
 }
 
+const MODAL_LEFT_POP_INITIAL = { opacity: 0, y: 18, x: -18, scale: 0.96 };
+const MODAL_LEFT_POP_ANIMATE = { opacity: 1, y: 0, x: 0, scale: 1 };
+
 export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -50,8 +53,8 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
-          initial={{ opacity: 0, y: 18, x: -18, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, x: 0, scale: 1 }}
+          initial={MODAL_LEFT_POP_INITIAL}
+          animate={MODAL_LEFT_POP_ANIMATE}
           exit={{ opacity: 0, y: 8, scale: 0.97 }}
           transition={{ duration: 0.22, ease: [0.34, 1.56, 0.64, 1] }}
         >
