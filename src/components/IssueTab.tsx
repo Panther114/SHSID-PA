@@ -18,6 +18,7 @@ export default function IssueTab({
   issueNumber, guides, subjects, search, authed, token, onRemove,
 }: IssueTabProps) {
   const [open, setOpen] = useState(false);
+  const hasActiveSearch = search.trim().length > 0;
 
   const filteredGuides = useMemo(() => {
     if (!search.trim()) return guides;
@@ -69,15 +70,19 @@ export default function IssueTab({
             <AnimatePresence>
               {subjects.map(subj => {
                 const subjectLevels = bySubjectLevel[subj.name] ?? {};
+                const visibleLevels = subj.levels.filter(level =>
+                  !hasActiveSearch || (subjectLevels[level]?.length ?? 0) > 0
+                );
+                if (hasActiveSearch && visibleLevels.length === 0) return null;
                 return (
                   <div key={subj.name} className="subject-group">
                     <h3 className="subject-heading">{subj.name}</h3>
-                    {subj.levels.map(level => {
+                    {visibleLevels.map(level => {
                       const levelGuides = subjectLevels[level] ?? [];
                       return (
                         <div key={level} className="level-group">
                           <div className="level-label">{level}</div>
-                          {levelGuides.length === 0 ? (
+                          {!hasActiveSearch && levelGuides.length === 0 ? (
                             <div style={{
                               fontSize: '0.8rem',
                               color: 'var(--c-text3)',

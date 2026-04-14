@@ -61,6 +61,18 @@ const upload = multer({
   },
 });
 
+function buildDisplayDownloadName(title, fallbackFilename) {
+  const fallbackBase = path.parse(fallbackFilename).name || 'guide';
+  const rawBase = typeof title === 'string' && title.trim() ? title.trim() : fallbackBase;
+  const withUnderscores = rawBase.replace(/\s+/g, '_');
+  const safeBase = withUnderscores
+    .replace(/[\r\n"]/g, '')
+    .replace(/\0/g, '')
+    .replace(/[\/\\:*?<>|;]/g, '_');
+  const finalBase = safeBase || 'guide';
+  return /\.pdf$/i.test(finalBase) ? finalBase : `${finalBase}.pdf`;
+}
+
 // GET /api/guides
 router.get('/', guidesLimiter, async (_req, res) => {
   try {
@@ -160,7 +172,7 @@ router.delete('/:id', guidesLimiter, authMiddleware, async (req, res) => {
 });
 
 // GET /api/guides/pdf/:filename  — serve PDF
-router.get('/pdf/:filename', guidesLimiter, (req, res) => {
+router.get('/pdf/:filename', guidesLimiter, async (req, res) => {
   let filePath;
   try {
     filePath = resolveUploadPath(req.params.filename);
@@ -173,8 +185,27 @@ router.get('/pdf/:filename', guidesLimiter, (req, res) => {
   }
 
   const safeFilename = path.basename(filePath);
+  let downloadFilename = safeFilename;
+  try {
+    const result = await pool.query(
+      'SELECT title FROM guides WHERE filename = $1 LIMIT 1',
+      [safeFilename]
+    );
+    const title = result.rows.length > 0 ? result.rows[0].title : undefined;
+    downloadFilename = buildDisplayDownloadName(title, safeFilename);
+  } catch (err) {
+    console.error('Failed to resolve display download filename:', err);
+  }
+
   res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `inline; filename="${safeFilename}"`);
+  const quotedFilename = downloadFilename
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"');
+  const encodedFilename = encodeURIComponent(downloadFilename);
+  res.setHeader(
+    'Content-Disposition',
+    `inline; filename="${quotedFilename}"; filename*=UTF-8''${encodedFilename}`
+  );
   const stream = fs.createReadStream(filePath);
   stream.on('error', (err) => {
     console.error('Stream error serving PDF:', err);
