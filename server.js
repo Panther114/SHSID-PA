@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const path = require('path');
 
@@ -18,9 +19,17 @@ app.use(express.static(DIST_DIR));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/guides', require('./routes/guides'));
 
+// Loose rate limit for SPA page serving (prevents file-system abuse)
+const spaLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // SPA fallback — serve index.html for all non-API routes
 // so client-side routing (/guides, /upload) works on direct visit or refresh
-app.get('*', (_req, res) => {
+app.get('*', spaLimiter, (_req, res) => {
   const indexPath = path.join(DIST_DIR, 'index.html');
   if (!fs.existsSync(indexPath)) {
     return res.status(503).send('Frontend not built. Run: npm run build');
