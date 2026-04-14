@@ -65,7 +65,9 @@ function buildDisplayDownloadName(title, fallbackFilename) {
   const fallbackBase = path.parse(fallbackFilename).name || 'guide';
   const rawBase = typeof title === 'string' && title.trim() ? title.trim() : fallbackBase;
   const withUnderscores = rawBase.replace(/\s+/g, '_');
-  const safeBase = withUnderscores.replace(/[\r\n"]/g, '');
+  const safeBase = withUnderscores
+    .replace(/[\r\n"]/g, '')
+    .replace(/[\/\\:*?<>|;]/g, '_');
   const finalBase = safeBase || 'guide';
   return /\.pdf$/i.test(finalBase) ? finalBase : `${finalBase}.pdf`;
 }
@@ -188,7 +190,8 @@ router.get('/pdf/:filename', guidesLimiter, async (req, res) => {
       'SELECT title FROM guides WHERE filename = $1 LIMIT 1',
       [safeFilename]
     );
-    downloadFilename = buildDisplayDownloadName(result.rows[0]?.title, safeFilename);
+    const title = result.rows.length > 0 ? result.rows[0].title : undefined;
+    downloadFilename = buildDisplayDownloadName(title, safeFilename);
   } catch (err) {
     console.error('Failed to resolve display download filename:', err);
   }
