@@ -29,7 +29,7 @@ const spaLimiter = rateLimit({
 
 // SPA fallback — serve index.html for all non-API routes
 // so client-side routing (/guides, /upload) works on direct visit or refresh
-app.get('*', spaLimiter, (_req, res) => {
+app.get(/^\/(?!api(?:\/|$)).*/, spaLimiter, (_req, res) => {
   const indexPath = path.join(DIST_DIR, 'index.html');
   if (!fs.existsSync(indexPath)) {
     return res.status(503).send('Frontend not built. Run: npm run build');
