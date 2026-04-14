@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const path = require('path');
 
@@ -9,25 +10,32 @@ const path = require('path');
 require('./db');
 
 const app = express();
-let iconBuffer;
-try {
-  iconBuffer = fs.readFileSync(path.join(__dirname, 'icon.png'));
-} catch (err) {
-  console.error('Failed to load icon.png:', err);
-}
 
+// Serve pre-built frontend from dist/
+const DIST_DIR = path.join(__dirname, 'dist');
 app.use(express.json());
-app.get('/icon.png', (_req, res) => {
-  if (!iconBuffer) {
-    return res.status(404).end();
-  }
-  res.set('Cache-Control', 'public, max-age=86400, must-revalidate');
-  res.type('png').send(iconBuffer);
-});
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(DIST_DIR));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/guides', require('./routes/guides'));
+
+// Loose rate limit for SPA page serving (prevents file-system abuse)
+const spaLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// SPA fallback — serve index.html for all non-API routes
+// so client-side routing (/guides, /upload) works on direct visit or refresh
+app.get('*', spaLimiter, (_req, res) => {
+  const indexPath = path.join(DIST_DIR, 'index.html');
+  if (!fs.existsSync(indexPath)) {
+    return res.status(503).send('Frontend not built. Run: npm run build');
+  }
+  res.sendFile(indexPath);
+});
 
 // Multer error handler
 app.use((err, _req, res, _next) => {
