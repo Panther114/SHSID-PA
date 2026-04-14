@@ -67,6 +67,7 @@ function buildDisplayDownloadName(title, fallbackFilename) {
   const withUnderscores = rawBase.replace(/\s+/g, '_');
   const safeBase = withUnderscores
     .replace(/[\r\n"]/g, '')
+    .replace(/\0/g, '')
     .replace(/[\/\\:*?<>|;]/g, '_');
   const finalBase = safeBase || 'guide';
   return /\.pdf$/i.test(finalBase) ? finalBase : `${finalBase}.pdf`;
@@ -197,10 +198,11 @@ router.get('/pdf/:filename', guidesLimiter, async (req, res) => {
   }
 
   res.setHeader('Content-Type', 'application/pdf');
+  const quotedFilename = downloadFilename.replace(/"/g, '\\"');
   const encodedFilename = encodeURIComponent(downloadFilename);
   res.setHeader(
     'Content-Disposition',
-    `inline; filename="${downloadFilename}"; filename*=UTF-8''${encodedFilename}`
+    `inline; filename="${quotedFilename}"; filename*=UTF-8''${encodedFilename}`
   );
   const stream = fs.createReadStream(filePath);
   stream.on('error', (err) => {
