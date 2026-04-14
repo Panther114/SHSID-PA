@@ -41,6 +41,13 @@
 
   --modal-bg:            #141414;
   --modal-shadow:        0 24px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.07);
+  --theme-btn-hover-rotate: -8deg;
+  --modal-visual-min-width: 180px;
+  --modal-image-offset-x: -8%;
+  --modal-image-width: 116%;
+  --modal-max-width: 760px;
+  --modal-mobile-max-width: 460px;
+  --mobile-hover-lift: -2px;
 
   --scroll-thumb:        rgba(255,255,255,0.1);
   --scroll-thumb-hover:  rgba(255,255,255,0.2);
@@ -243,12 +250,16 @@ nav::after {
   letter-spacing: 0.08em;
   color: var(--c-text2);
   text-decoration: none;
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.16s ease, background 0.16s ease,
+              transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.22s ease;
   white-space: nowrap;
 }
 .nav-link:hover {
   color: var(--c-text);
   background: var(--c-surface2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 /* ── HAMBURGER MENU ─────────────────────────────────── */
@@ -358,7 +369,7 @@ nav::after {
   text-decoration: none;
   cursor: pointer;
   border: none;
-  transition: all 0.15s cubic-bezier(0.4,0,0.2,1);
+  transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -389,9 +400,9 @@ nav::after {
   color: #fff;
 }
 .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 6px 28px var(--c-accent-glow);
-  transform: translateY(-2px);
+  filter: brightness(1.12) saturate(1.08);
+  box-shadow: 0 10px 34px var(--c-accent-glow);
+  transform: translateY(-3px) scale(1.01);
 }
 
 .btn-ghost {
@@ -403,7 +414,8 @@ nav::after {
   background: var(--c-surface2);
   border-color: var(--c-accent);
   color: var(--c-accent2);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
 }
 
 .btn-lg {
@@ -437,6 +449,7 @@ nav::after {
   border-color: var(--c-accent);
   color: var(--c-text);
   box-shadow: 0 0 0 2px var(--c-accent-bg), 0 0 24px var(--c-accent-glow);
+  transform: translateY(-2px) scale(1.06);
 }
 
 /* ── BADGES ─────────────────────────────────────────── */
@@ -476,12 +489,17 @@ nav::after {
   color: var(--c-text);
   font-size: 0.9rem;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s,
+              transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.form-input:hover {
+  transform: translateY(-1px);
 }
 .form-input:focus {
   outline: none;
   border-color: var(--c-accent);
   box-shadow: 0 0 0 3px var(--c-accent-bg);
+  transform: translateY(-1px);
 }
 .form-input::placeholder { color: var(--input-placeholder); }
 
@@ -501,9 +519,9 @@ nav::after {
   transition: filter 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 .full-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px var(--c-accent-glow);
+  filter: brightness(1.12) saturate(1.08);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 10px 34px var(--c-accent-glow);
 }
 .full-btn:disabled {
   opacity: 0.45;
@@ -562,11 +580,11 @@ footer::before {
 .glass-card:hover {
   background: var(--card-hover-bg);
   border-color: var(--card-hover-border);
-  transform: translateY(-5px);
-  box-shadow: 0 14px 48px rgba(0,0,0,0.16);
+  transform: translateY(-7px) scale(1.008);
+  box-shadow: 0 20px 54px rgba(0,0,0,0.2);
 }
-[data-theme="light"] .glass-card:hover { box-shadow: 0 14px 48px rgba(0,0,0,0.08); }
-[data-theme="pink"]  .glass-card:hover { box-shadow: 0 14px 48px rgba(233,30,140,0.1); }
+[data-theme="light"] .glass-card:hover { box-shadow: 0 18px 54px rgba(0,0,0,0.1); }
+[data-theme="pink"]  .glass-card:hover { box-shadow: 0 18px 54px rgba(233,30,140,0.14); }
 
 /* ── GLASS PANEL (static container) ─────────────────── */
 .glass-panel {
@@ -583,11 +601,11 @@ footer::before {
               box-shadow 0.22s ease;
 }
 .pa-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 36px rgba(0,0,0,0.13);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.16);
 }
-[data-theme="light"] .pa-lift:hover { box-shadow: 0 10px 36px rgba(0,0,0,0.07); }
-[data-theme="pink"]  .pa-lift:hover { box-shadow: 0 10px 36px rgba(233,30,140,0.09); }
+[data-theme="light"] .pa-lift:hover { box-shadow: 0 14px 40px rgba(0,0,0,0.09); }
+[data-theme="pink"]  .pa-lift:hover { box-shadow: 0 14px 40px rgba(233,30,140,0.12); }
 .pa-lift:active { transform: scale(0.97) translateY(-1px) !important; }
 
 /* ── FLOATING KEYFRAMES ──────────────────────────────── */
@@ -1317,11 +1335,11 @@ footer::before {
 .guide-card:hover {
   background: var(--card-hover-bg);
   border-color: var(--card-hover-border);
-  transform: translateX(4px) translateY(-1px);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+  transform: translateX(5px) translateY(-3px) scale(1.005);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.14);
 }
-[data-theme="light"] .guide-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
-[data-theme="pink"]  .guide-card:hover { box-shadow: 0 6px 24px rgba(233,30,140,0.08); }
+[data-theme="light"] .guide-card:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.09); }
+[data-theme="pink"]  .guide-card:hover { box-shadow: 0 10px 28px rgba(233,30,140,0.12); }
 .guide-card::after {
   content: '';
   position: absolute;
@@ -1458,9 +1476,49 @@ footer::before {
   background: var(--modal-bg);
   border: 1px solid var(--c-border2);
   border-radius: 12px;
-  padding: 2rem;
-  width: min(440px, 100%);
+  padding: 0;
+  width: min(var(--modal-max-width), 100%);
   box-shadow: var(--modal-shadow);
+  position: relative;
+  overflow: hidden;
+}
+.modal-inner {
+  display: grid;
+  grid-template-columns: minmax(var(--modal-visual-min-width), 250px) 1fr;
+  min-height: 320px;
+}
+.modal-visual {
+  position: relative;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255,255,255,0.18), transparent 42%),
+    linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.34));
+  overflow: hidden;
+}
+.modal-visual-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(130deg, rgba(0,0,0,0.08), rgba(0,0,0,0.28));
+  z-index: 2;
+}
+.modal-visual-image {
+  position: absolute;
+  left: var(--modal-image-offset-x);
+  bottom: 0;
+  width: var(--modal-image-width);
+  max-width: none;
+  object-fit: contain;
+  opacity: 0.9;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
+}
+.modal-visual-image.skyline-dark  { display: block; }
+.modal-visual-image.skyline-light { display: none; }
+[data-theme="light"] .modal-visual-image.skyline-dark  { display: none; }
+[data-theme="light"] .modal-visual-image.skyline-light { display: block; }
+[data-theme="pink"]  .modal-visual-image.skyline-dark  { display: none; }
+[data-theme="pink"]  .modal-visual-image.skyline-light { display: block; }
+.modal-content {
+  padding: 2rem;
   position: relative;
 }
 .modal-close {
@@ -1479,6 +1537,7 @@ footer::before {
   font-family: inherit;
   transition: all 0.15s;
   line-height: 1;
+  z-index: 3;
 }
 .modal-close:hover {
   background: var(--c-surface2);
@@ -1490,6 +1549,27 @@ footer::before {
   letter-spacing: -0.03em;
   color: var(--c-text);
   margin-bottom: 1.5rem;
+}
+
+@media (max-width: 720px) {
+  .modal {
+    width: min(var(--modal-mobile-max-width), 100%);
+  }
+  .modal-inner {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .modal-visual {
+    min-height: 130px;
+  }
+  .modal-visual-image {
+    width: 108%;
+    left: -4%;
+    opacity: 0.84;
+  }
+  .modal-content {
+    padding: 1.6rem;
+  }
 }
 .form-field { margin-bottom: 0.9rem; }
 .form-error {
@@ -1672,6 +1752,11 @@ footer::before {
   .upload-bg-blob { animation: none !important; }
   .deco-chip { animation: none !important; opacity: 0 !important; }
   .pa-lift:hover, .glass-card:hover { transform: none !important; }
+  .btn:hover, .btn-primary:hover, .btn-ghost:hover,
+  .theme-btn:hover, .guide-card:hover, .nav-link:hover,
+  .form-input:hover, .form-input:focus, .full-btn:hover {
+    transform: none !important;
+  }
   .hero-skyline-img { will-change: auto; }
   .pa-shimmer { animation: none !important; background: var(--c-surface); }
   nav::after { animation: none !important; opacity: 0.25; }
@@ -1681,6 +1766,23 @@ footer::before {
 @media (max-width: 600px) {
   .btn::after, .full-btn::after { display: none; }
   .theme-btn:hover { box-shadow: none; }
+  .theme-btn:hover {
+    transform: translateY(var(--mobile-hover-lift)) scale(1.03);
+  }
+  .guide-card:hover,
+  .glass-card:hover,
+  .pa-lift:hover {
+    transform: translateY(var(--mobile-hover-lift));
+  }
+  .modal-visual {
+    min-height: 102px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 601px) {
+  .theme-btn:hover {
+    transform: translateY(-2px) rotate(var(--theme-btn-hover-rotate)) scale(1.06);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════
