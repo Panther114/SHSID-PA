@@ -198,7 +198,9 @@ router.get('/pdf/:filename', guidesLimiter, async (req, res) => {
   }
 
   res.setHeader('Content-Type', 'application/pdf');
-  const quotedFilename = downloadFilename.replace(/"/g, '\\"');
+  const quotedFilename = downloadFilename
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"');
   const encodedFilename = encodeURIComponent(downloadFilename);
   res.setHeader(
     'Content-Disposition',
