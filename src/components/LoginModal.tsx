@@ -101,7 +101,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                   className="form-input"
                   type="text"
                   autoComplete="username"
-                  placeholder="ask austin for account name"
+                  placeholder="account name"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   onKeyDown={onKey}
