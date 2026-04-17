@@ -37,8 +37,8 @@ export function useAuth() {
     }
     return stored;
   });
-  const authed = getTokenRole(token) !== null;
   const role = getTokenRole(token);
+  const authed = role !== null;
 
   const login = useCallback((tok: string) => {
     const normalized = normalizeToken(tok);
