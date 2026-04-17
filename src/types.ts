@@ -14,6 +14,7 @@ export interface Guide {
 }
 
 export type Theme = 'dark' | 'light' | 'pink';
+export type AuthRole = 'admin' | 'student' | null;
 
 export const SEMESTER_PERIODS = [
   { label: 'Semester 1 Midterms', value: 1, titlePrefix: 'Semester 1 Midterm' },

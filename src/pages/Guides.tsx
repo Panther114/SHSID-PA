@@ -20,7 +20,9 @@ const revealVariants = {
 
 export default function Guides() {
   const { theme, toggle } = useTheme();
-  const { token, authed, login } = useAuth();
+  const { token, authed, role, login } = useAuth();
+  const canViewGuides = role === 'admin' || role === 'student';
+  const canManageGuides = role === 'admin';
 
   const [guides,    setGuides]    = useState<Guide[]>([]);
   const [subjects,  setSubjects]  = useState<Subject[]>([]);
@@ -30,6 +32,13 @@ export default function Guides() {
   const [search,    setSearch]    = useState('');
 
   useEffect(() => {
+    if (!canViewGuides) {
+      setGuides([]);
+      setError('');
+      setLoading(false);
+      return;
+    }
+
     const ac = new AbortController();
     (async () => {
       try {
@@ -51,7 +60,7 @@ export default function Guides() {
       }
     })();
     return () => ac.abort();
-  }, []);
+  }, [canViewGuides]);
 
   const removeGuide = useCallback((id: number) => {
     setGuides(prev => prev.filter(g => g.id !== id));
@@ -86,7 +95,7 @@ export default function Guides() {
       <Nav
         theme={theme}
         onToggle={toggle}
-        authed={authed}
+        role={role}
         onLoginClick={() => setShowModal(true)}
       />
 
@@ -142,21 +151,35 @@ export default function Guides() {
       </section>
 
       {/* Search toolbar */}
-      <div className="toolbar">
-        <div className="search-wrap">
-          <span className="search-icon">⌕</span>
-          <input
-            className="search-input"
-            type="search"
-            placeholder="Search guides or subjects…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            aria-label="Search guides"
-          />
+      {canViewGuides && (
+        <div className="toolbar">
+          <div className="search-wrap">
+            <span className="search-icon">⌕</span>
+            <input
+              className="search-input"
+              type="search"
+              placeholder="Search guides or subjects…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              aria-label="Search guides"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {loading && <SkeletonLoader />}
+
+      {!loading && !canViewGuides && (
+        <div className="guides-content">
+          <div className="empty-state-frame state-msg">
+            <div className="empty-state-illustration" aria-hidden="true">🔒</div>
+            <div className="empty-state-text">
+              <div className="state-msg-title">Log in to view resources</div>
+              <div>Student or admin login is required to access guides.</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {!loading && error && (
         <div className="guides-content">
@@ -164,7 +187,7 @@ export default function Guides() {
         </div>
       )}
 
-      {!loading && !error && guides.length === 0 && (
+      {!loading && canViewGuides && !error && guides.length === 0 && (
         <div className="guides-content">
           <div className="empty-state-frame state-msg">
             <div className="empty-state-illustration" aria-hidden="true">📖</div>
@@ -176,7 +199,7 @@ export default function Guides() {
         </div>
       )}
 
-      {!loading && !error && guides.length > 0 && (
+      {!loading && canViewGuides && !error && guides.length > 0 && (
         <div className="guides-content">
           {sortedIssues.length === 0 ? (
             <div className="empty-state-frame state-msg">
@@ -188,16 +211,16 @@ export default function Guides() {
             </div>
           ) : (
             sortedIssues.map(issue => (
-              <IssueTab
-                key={issue}
-                issueNumber={issue}
-                guides={byIssue[issue]}
-                subjects={subjects}
-                search={search}
-                authed={authed}
-                token={token}
-                onRemove={removeGuide}
-              />
+                <IssueTab
+                  key={issue}
+                  issueNumber={issue}
+                  guides={byIssue[issue]}
+                  subjects={subjects}
+                  search={search}
+                  canManageGuides={canManageGuides}
+                  token={token}
+                  onRemove={removeGuide}
+                />
             ))
           )}
         </div>

@@ -5,12 +5,12 @@ import type { Guide } from '../types';
 interface GuideCardProps {
   guide: Guide;
   idx: number;
-  authed: boolean;
+  canManageGuides: boolean;
   token: string | null;
   onRemove: (id: number) => void;
 }
 
-export default function GuideCard({ guide, idx, authed, token, onRemove }: GuideCardProps) {
+export default function GuideCard({ guide, idx, canManageGuides, token, onRemove }: GuideCardProps) {
   const [confirming, setConfirming] = useState(false);
   const [removing,   setRemoving]   = useState(false);
 
@@ -53,12 +53,12 @@ export default function GuideCard({ guide, idx, authed, token, onRemove }: Guide
         <div className="guide-title">{guide.title}</div>
       </div>
       <div className="guide-actions">
-        {authed && !confirming && (
+        {canManageGuides && !confirming && (
           <button className="remove-btn" onClick={() => setConfirming(true)}>
             Remove
           </button>
         )}
-        {authed && confirming && (
+        {canManageGuides && confirming && (
           <>
             <button className="remove-btn" onClick={handleRemove} disabled={removing}>
               {removing ? 'Removing…' : 'Confirm'}
