@@ -9,6 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const router = express.Router();
+// Student G-number whitelist file at repository root. Restart server after updating this file.
 const grade10Path = path.join(__dirname, '..', 'Grade_10.txt');
 
 function loadGrade10Set() {
@@ -25,6 +26,7 @@ function loadGrade10Set() {
     return null;
   }
 }
+const grade10Set = loadGrade10Set();
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -36,15 +38,17 @@ const loginLimiter = rateLimit({
 
 // POST /api/auth/login
 router.post('/login', loginLimiter, async (req, res) => {
-  const mode = String(req.body?.mode ?? 'admin').toLowerCase();
+  const mode = String(req.body?.mode ?? '').toLowerCase();
+  if (mode !== 'admin' && mode !== 'student') {
+    return res.status(400).json({ error: 'Login mode must be admin or student' });
+  }
 
   if (mode === 'student') {
-    const gNumberRaw = String(req.body?.gNumber ?? req.body?.email ?? '').trim();
+    const gNumberRaw = String(req.body?.gNumber ?? '').trim();
     if (!gNumberRaw) {
       return res.status(400).json({ error: 'G number is required' });
     }
 
-    const grade10Set = loadGrade10Set();
     if (!grade10Set) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -55,7 +59,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     }
 
     const token = jwt.sign(
-      { sub: normalizedGNumber, g_number: gNumberRaw, role: 'student' },
+      { sub: gNumberRaw, g_number: gNumberRaw, role: 'student' },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );

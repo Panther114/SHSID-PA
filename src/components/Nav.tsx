@@ -47,7 +47,7 @@ export default function Nav({ theme, onToggle, role, onLoginClick }: NavProps) {
           )}
           {isGuides && (
             <>
-              {!isStudent && role !== 'admin' && onLoginClick && (
+              {!isStudent && !isAdmin && onLoginClick && (
                 <button className="btn btn-ghost" onClick={onLoginClick}>
                   Login
                 </button>

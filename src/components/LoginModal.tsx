@@ -78,9 +78,10 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                   id="login-mode"
                   className="form-input"
                   value={mode}
+                  aria-label="Select Admin or Student"
                   onChange={e => setMode(e.target.value as 'admin' | 'student' | '')}
                 >
-                  <option value="" disabled>Select Admin or Student</option>
+                  <option value="" disabled hidden>Select Admin or Student</option>
                   <option value="admin">Admin Login</option>
                   <option value="student">Student Login</option>
                 </select>

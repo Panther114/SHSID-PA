@@ -17,9 +17,8 @@ export function isTokenValid(token: string | null): boolean {
 }
 
 export function getTokenRole(token: string | null): 'admin' | 'student' | null {
-  if (!isTokenValid(token)) return null;
   const payload = token ? parseJwt(token) : null;
-  if (!payload) return null;
+  if (!payload || payload.exp * 1000 <= Date.now()) return null;
   return payload.role === 'admin' || payload.role === 'student' ? payload.role : null;
 }
 

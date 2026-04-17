@@ -61,6 +61,13 @@ const upload = multer({
   },
 });
 
+function requireAdmin(req, res, next) {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  next();
+}
+
 function buildDisplayDownloadName(title, fallbackFilename) {
   const fallbackBase = path.parse(fallbackFilename).name || 'guide';
   const rawBase = typeof title === 'string' && title.trim() ? title.trim() : fallbackBase;
@@ -95,14 +102,7 @@ router.get('/', guidesLimiter, async (_req, res) => {
 });
 
 // POST /api/guides/upload  (protected)
-router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), async (req, res) => {
-  if (req.user?.role !== 'admin') {
-    if (req.file?.filename) {
-      fs.unlink(path.join(uploadsDir, path.basename(req.file.filename)), () => {});
-    }
-    return res.status(403).json({ error: 'Admin access required' });
-  }
-
+router.post('/upload', uploadLimiter, authMiddleware, requireAdmin, upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'PDF file is required' });
   }
@@ -147,11 +147,7 @@ router.post('/upload', uploadLimiter, authMiddleware, upload.single('pdf'), asyn
 });
 
 // DELETE /api/guides/:id  (protected)
-router.delete('/:id', guidesLimiter, authMiddleware, async (req, res) => {
-  if (req.user?.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required' });
-  }
-
+router.delete('/:id', guidesLimiter, authMiddleware, requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (isNaN(id) || id < 1) {
     return res.status(400).json({ error: 'Invalid guide id' });
