@@ -21,8 +21,10 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const submit = async () => {
     setError('');
     if (!mode) { setError('Please select Admin or Student.'); return; }
-    if (!email) { setError(isStudentMode ? 'G number is required.' : 'Account is required.'); return; }
-    if (isAdminMode && !password) { setError('Account and password are required.'); return; }
+    const account = email.trim();
+    const pwd = password.trim();
+    if (!account) { setError(isStudentMode ? 'G number is required.' : 'Account is required.'); return; }
+    if (isAdminMode && !pwd) { setError('Account and password are required.'); return; }
 
     setLoading(true);
     try {
@@ -31,13 +33,14 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
           isStudentMode
-            ? { mode: 'student', gNumber: email }
-            : { mode: 'admin', email, password }
+            ? { mode: 'student', gNumber: account }
+            : { mode: 'admin', email: account, password: pwd }
         ),
       });
       const data = await res.json() as { token?: string; error?: string };
       if (!res.ok) { setError(data.error ?? 'Login failed.'); return; }
-      onSuccess(data.token!);
+      if (!data.token) { setError('Login failed. Please try again.'); return; }
+      onSuccess(data.token);
       onClose();
     } catch {
       setError('Network error. Please try again.');
@@ -46,7 +49,10 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
     }
   };
 
-  const onKey = (e: React.KeyboardEvent) => { if (e.key === 'Enter') submit(); };
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!loading) void submit();
+  };
 
   return (
     <AnimatePresence>
@@ -70,7 +76,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
         >
           <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
           <div className="modal-inner">
-            <div className="modal-content">
+            <form className="modal-content" onSubmit={onSubmit} noValidate>
               <h2 className="modal-title" id="modal-title">Login</h2>
               <div className="form-field">
                 <label className="form-label" htmlFor="login-mode">Login Type</label>
@@ -105,7 +111,6 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                   placeholder={isStudentMode ? 'G number' : 'account name'}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  onKeyDown={onKey}
                 />
               </div>
               {!isStudentMode && (
@@ -119,14 +124,13 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                     placeholder="Password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    onKeyDown={onKey}
                   />
                 </div>
               )}
-              <button className="full-btn" onClick={submit} disabled={loading}>
+              <button type="submit" className="full-btn" disabled={loading}>
                 {loading ? 'Signing in…' : 'Sign In'}
               </button>
-            </div>
+            </form>
           </div>
         </motion.div>
       </motion.div>

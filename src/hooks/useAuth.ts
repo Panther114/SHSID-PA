@@ -23,7 +23,14 @@ export function getTokenRole(token: string | null): 'admin' | 'student' | null {
 }
 
 export function useAuth() {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('jwt'));
+  const [token, setToken] = useState<string | null>(() => {
+    const stored = localStorage.getItem('jwt');
+    if (!isTokenValid(stored)) {
+      localStorage.removeItem('jwt');
+      return null;
+    }
+    return stored;
+  });
   const authed = isTokenValid(token);
   const role = getTokenRole(token);
 
