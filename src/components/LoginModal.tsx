@@ -51,7 +51,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loading) void submit();
+    if (!loading) submit();
   };
 
   return (
@@ -76,7 +76,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
         >
           <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
           <div className="modal-inner">
-            <form className="modal-content" onSubmit={onSubmit} noValidate>
+            <form className="modal-content" onSubmit={onSubmit}>
               <h2 className="modal-title" id="modal-title">Login</h2>
               <div className="form-field">
                 <label className="form-label" htmlFor="login-mode">Login Type</label>
@@ -85,6 +85,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                   className="form-input"
                   value={mode}
                   aria-label="Select Admin or Student"
+                  required
                   onChange={e => setMode(e.target.value as 'admin' | 'student' | '')}
                 >
                   <option value="" disabled hidden>Select Admin or Student</option>
@@ -110,6 +111,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                   autoComplete="username"
                   placeholder={isStudentMode ? 'G number' : 'account name'}
                   value={email}
+                  required
                   onChange={e => setEmail(e.target.value)}
                 />
               </div>
@@ -123,6 +125,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                     autoComplete="current-password"
                     placeholder="Password"
                     value={password}
+                    required
                     onChange={e => setPassword(e.target.value)}
                   />
                 </div>
