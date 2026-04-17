@@ -6,6 +6,24 @@ import Footer from '../components/Footer';
 import { useTheme } from '../hooks/useTheme';
 
 const skylineDataUrlCache = new Map<string, string>();
+const MAX_SKYLINE_CACHE_ENTRIES = 4;
+
+function toSkylineCacheKey(source: string) {
+  try {
+    const url = new URL(source, window.location.origin);
+    return `${url.pathname}${url.search}`;
+  } catch {
+    return source;
+  }
+}
+
+function setSkylineCache(key: string, value: string) {
+  if (skylineDataUrlCache.has(key)) skylineDataUrlCache.delete(key);
+  skylineDataUrlCache.set(key, value);
+  if (skylineDataUrlCache.size <= MAX_SKYLINE_CACHE_ENTRIES) return;
+  const oldestKey = skylineDataUrlCache.keys().next().value;
+  if (oldestKey) skylineDataUrlCache.delete(oldestKey);
+}
 
 /* Canvas-based background removal for the skyline image */
 function removeSkylineBg(imgEl: HTMLImageElement) {
@@ -16,7 +34,10 @@ function removeSkylineBg(imgEl: HTMLImageElement) {
     return;
   }
 
-  const srcKey = imgEl.dataset.srcKey ?? imgEl.getAttribute('src') ?? imgEl.currentSrc;
+  const srcKey = toSkylineCacheKey(
+    imgEl.dataset.srcKey || imgEl.getAttribute('src')?.trim() || imgEl.currentSrc
+  );
+  if (!srcKey) return;
   if (!imgEl.dataset.srcKey) imgEl.dataset.srcKey = srcKey;
   const cached = skylineDataUrlCache.get(srcKey);
   if (cached) {
@@ -64,7 +85,7 @@ function removeSkylineBg(imgEl: HTMLImageElement) {
     }
     ctx.putImageData(imgData, 0, 0);
     const processed = canvas.toDataURL('image/png');
-    skylineDataUrlCache.set(srcKey, processed);
+    setSkylineCache(srcKey, processed);
     imgEl.dataset.bgProcessed = '1';
     imgEl.src = processed;
   };
@@ -147,11 +168,7 @@ export default function Home() {
             src="/images/hero/shanghai-skyline-dark.png"
             alt="" role="presentation" draggable={false}
             decoding="async"
-            onLoad={e => {
-              if (getComputedStyle(e.currentTarget).display !== 'none') {
-                removeSkylineBg(e.currentTarget);
-              }
-            }}
+            onLoad={e => { if (theme === 'dark') removeSkylineBg(e.currentTarget); }}
           />
           <img
             ref={skylineLightRef}
@@ -159,11 +176,7 @@ export default function Home() {
             src="/images/hero/shanghai-skyline-light.png"
             alt="" role="presentation" draggable={false}
             decoding="async"
-            onLoad={e => {
-              if (getComputedStyle(e.currentTarget).display !== 'none') {
-                removeSkylineBg(e.currentTarget);
-              }
-            }}
+            onLoad={e => { if (theme !== 'dark') removeSkylineBg(e.currentTarget); }}
           />
         </div>
 
