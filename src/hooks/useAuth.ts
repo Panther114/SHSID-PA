@@ -22,13 +22,13 @@ export function getTokenRole(token: string | null): 'admin' | 'student' | null {
   return payload.role === 'admin' || payload.role === 'student' ? payload.role : null;
 }
 
-export function useAuth() {
-  const normalizeToken = (candidate: string | null): string | null => {
-    if (!isTokenValid(candidate)) return null;
-    if (!getTokenRole(candidate)) return null;
-    return candidate;
-  };
+function normalizeToken(candidate: string | null): string | null {
+  if (!isTokenValid(candidate)) return null;
+  if (!getTokenRole(candidate)) return null;
+  return candidate;
+}
 
+export function useAuth() {
   const [token, setToken] = useState<string | null>(() => {
     const stored = normalizeToken(localStorage.getItem('jwt'));
     if (!stored) {
