@@ -8,6 +8,7 @@ interface NavProps {
   onToggle: () => void;
   role?: AuthRole;
   onLoginClick?: () => void;
+  onLogout?: () => void;
 }
 
 const themeIcon: Record<Theme, string> = {
@@ -16,13 +17,14 @@ const themeIcon: Record<Theme, string> = {
   pink: '🌙',
 };
 
-export default function Nav({ theme, onToggle, role, onLoginClick }: NavProps) {
+export default function Nav({ theme, onToggle, role, onLoginClick, onLogout }: NavProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   const isGuides = location.pathname === '/guides';
   const isAdmin = role === 'admin';
   const isStudent = role === 'student';
+  const isLoggedIn = isAdmin || isStudent;
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -58,6 +60,11 @@ export default function Nav({ theme, onToggle, role, onLoginClick }: NavProps) {
                 {isAdmin ? 'Admin' : isStudent ? 'Student' : 'Not logged in'}
               </span>
             </>
+          )}
+          {isLoggedIn && onLogout && (
+            <button className="btn btn-ghost nav-logout-btn" onClick={onLogout}>
+              Logout
+            </button>
           )}
           {isGuides && isAdmin && (
             <Link to="/upload" className="btn btn-primary" style={{ marginRight: '0.2rem' }}>
@@ -126,6 +133,17 @@ export default function Nav({ theme, onToggle, role, onLoginClick }: NavProps) {
                   <div className={`mobile-nav-status ${isAdmin ? 'status-admin' : isStudent ? 'status-student' : 'status-none'}`}>
                     {isAdmin ? 'Admin' : isStudent ? 'Student' : 'Not logged in'}
                   </div>
+                </>
+              )}
+              {isLoggedIn && onLogout && (
+                <>
+                  <div className="mobile-nav-divider" />
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => { onLogout(); closeMenu(); }}
+                  >
+                    Logout
+                  </button>
                 </>
               )}
               <div className="mobile-nav-divider" />

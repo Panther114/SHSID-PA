@@ -22,21 +22,33 @@ export function getTokenRole(token: string | null): 'admin' | 'student' | null {
   return payload.role === 'admin' || payload.role === 'student' ? payload.role : null;
 }
 
+function normalizeToken(candidate: string | null): string | null {
+  if (!isTokenValid(candidate)) return null;
+  if (!getTokenRole(candidate)) return null;
+  return candidate;
+}
+
 export function useAuth() {
   const [token, setToken] = useState<string | null>(() => {
-    const stored = localStorage.getItem('jwt');
-    if (!isTokenValid(stored)) {
+    const stored = normalizeToken(localStorage.getItem('jwt'));
+    if (!stored) {
       localStorage.removeItem('jwt');
       return null;
     }
     return stored;
   });
-  const authed = isTokenValid(token);
   const role = getTokenRole(token);
+  const authed = role !== null;
 
   const login = useCallback((tok: string) => {
-    localStorage.setItem('jwt', tok);
-    setToken(tok);
+    const normalized = normalizeToken(tok);
+    if (!normalized) {
+      localStorage.removeItem('jwt');
+      setToken(null);
+      return;
+    }
+    localStorage.setItem('jwt', normalized);
+    setToken(normalized);
   }, []);
 
   const logout = useCallback(() => {

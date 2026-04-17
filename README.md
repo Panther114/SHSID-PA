@@ -17,6 +17,8 @@ SHSID Peer Advisors (PA) web platform for browsing and managing peer-written aca
   - Login modal supports:
     - **Admin Login** (account + password, JWT role `admin`)
     - **Student Login** (G number only, matched against `Grade_10.txt`, JWT role `student`)
+    - Improved login type picker for faster Student/Admin selection
+  - Logged-in users can use the navbar **Logout** action to switch accounts without clearing browser cache
   - Admin-only guide removal controls and upload access
 - **Guide upload (`/upload.html`)**
   - JWT-gated page (redirects if session is invalid)

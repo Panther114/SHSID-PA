@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import { useTheme } from '../hooks/useTheme';
-import { getTokenRole, isTokenValid } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import type { Subject } from '../types';
 import { SEMESTER_PERIODS } from '../types';
 
@@ -215,17 +215,16 @@ function UploadForm({ token }: { token: string }) {
 
 export default function Upload() {
   const { theme, toggle } = useTheme();
-  const [token] = useState(() => localStorage.getItem('jwt'));
+  const { token, authed, role, logout } = useAuth();
   const [checked, setChecked] = useState(false);
-  const role = getTokenRole(token);
 
   useEffect(() => {
-    if (!isTokenValid(token) || role !== 'admin') {
+    if (!authed || role !== 'admin') {
       window.location.href = '/guides';
     } else {
       setChecked(true);
     }
-  }, [token, role]);
+  }, [authed, role]);
 
   if (!checked) return null;
 
@@ -235,7 +234,7 @@ export default function Upload() {
         <div className="upload-bg-blob upload-bg-blob-1" />
         <div className="upload-bg-blob upload-bg-blob-2" />
       </div>
-      <Nav theme={theme} onToggle={toggle} role={role} />
+      <Nav theme={theme} onToggle={toggle} role={role} onLogout={logout} />
       <div className="upload-page">
         <motion.div
           className="upload-header"

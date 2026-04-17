@@ -459,6 +459,15 @@ nav::after {
   transform: translateY(-3px);
   box-shadow: 0 10px 24px rgba(0,0,0,0.12);
 }
+.nav-logout-btn {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+}
+.nav-logout-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
 
 .btn-lg {
   padding: 0.75rem 1.85rem;
@@ -1591,6 +1600,43 @@ footer::before {
   color: var(--c-text);
   margin-bottom: 1.5rem;
 }
+.login-role-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.login-role-btn {
+  border: 1.5px solid var(--input-border);
+  background: var(--input-bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+  color: var(--c-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.login-role-btn:hover {
+  border-color: var(--c-accent);
+  transform: translateY(-1px);
+}
+.login-role-btn.active {
+  border-color: var(--c-accent);
+  background: var(--c-accent-bg);
+  box-shadow: 0 0 0 3px var(--c-accent-bg);
+}
+.login-role-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.login-role-sub {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.74rem;
+  color: var(--c-text2);
+}
 
 @media (max-width: 720px) {
   .modal {
@@ -1610,6 +1656,9 @@ footer::before {
   }
   .modal-content {
     padding: 1.6rem;
+  }
+  .login-role-picker {
+    grid-template-columns: 1fr;
   }
 }
 .form-field { margin-bottom: 0.9rem; }
