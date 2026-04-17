@@ -1,8 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { useLocation, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
-import Guides from './pages/Guides';
-import Upload from './pages/Upload';
+
+const Guides = lazy(() => import('./pages/Guides'));
+const Upload = lazy(() => import('./pages/Upload'));
 
 const pageVariants = {
   initial: { opacity: 0, y: 8 },
@@ -27,13 +29,15 @@ function AnimatedRoutes() {
         exit="exit"
         transition={pageTransition}
       >
-        <Routes location={location}>
-          <Route path="/" element={<Home />} />
-          <Route path="/guides" element={<Guides />} />
-          <Route path="/upload" element={<Upload />} />
-          {/* Fallback */}
-          <Route path="*" element={<Home />} />
-        </Routes>
+        <Suspense fallback={null}>
+          <Routes location={location}>
+            <Route path="/" element={<Home />} />
+            <Route path="/guides" element={<Guides />} />
+            <Route path="/upload" element={<Upload />} />
+            {/* Fallback */}
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   );

@@ -5,9 +5,26 @@ import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import { useTheme } from '../hooks/useTheme';
 
+const skylineDataUrlCache = new Map<string, string>();
+
 /* Canvas-based background removal for the skyline image */
 function removeSkylineBg(imgEl: HTMLImageElement) {
+  if (imgEl.dataset.bgProcessed === '1') return;
   if (!imgEl || !imgEl.complete || !imgEl.naturalWidth) return;
+  if (imgEl.src.startsWith('data:image/')) {
+    imgEl.dataset.bgProcessed = '1';
+    return;
+  }
+
+  const srcKey = imgEl.dataset.srcKey ?? imgEl.getAttribute('src') ?? imgEl.currentSrc;
+  if (!imgEl.dataset.srcKey) imgEl.dataset.srcKey = srcKey;
+  const cached = skylineDataUrlCache.get(srcKey);
+  if (cached) {
+    imgEl.dataset.bgProcessed = '1';
+    imgEl.src = cached;
+    return;
+  }
+
   const testC = document.createElement('canvas');
   testC.width = 1;
   testC.height = 1;
@@ -46,7 +63,10 @@ function removeSkylineBg(imgEl: HTMLImageElement) {
       }
     }
     ctx.putImageData(imgData, 0, 0);
-    imgEl.src = canvas.toDataURL('image/png');
+    const processed = canvas.toDataURL('image/png');
+    skylineDataUrlCache.set(srcKey, processed);
+    imgEl.dataset.bgProcessed = '1';
+    imgEl.src = processed;
   };
 
   if ('requestIdleCallback' in window) {
@@ -69,6 +89,8 @@ const revealVariants = {
 export default function Home() {
   const { theme, toggle } = useTheme();
   const skylineRef = useRef<HTMLDivElement>(null);
+  const skylineDarkRef = useRef<HTMLImageElement>(null);
+  const skylineLightRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -87,6 +109,11 @@ export default function Home() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    const activeSkyline = theme === 'dark' ? skylineDarkRef.current : skylineLightRef.current;
+    if (activeSkyline) removeSkylineBg(activeSkyline);
+  }, [theme]);
 
   return (
     <>
@@ -115,16 +142,28 @@ export default function Home() {
 
         <div className="hero-skyline-wrap" ref={skylineRef} aria-hidden="true">
           <img
+            ref={skylineDarkRef}
             className="hero-skyline-img skyline-dark"
             src="/images/hero/shanghai-skyline-dark.png"
             alt="" role="presentation" draggable={false}
-            onLoad={e => removeSkylineBg(e.currentTarget)}
+            decoding="async"
+            onLoad={e => {
+              if (getComputedStyle(e.currentTarget).display !== 'none') {
+                removeSkylineBg(e.currentTarget);
+              }
+            }}
           />
           <img
+            ref={skylineLightRef}
             className="hero-skyline-img skyline-light"
             src="/images/hero/shanghai-skyline-light.png"
             alt="" role="presentation" draggable={false}
-            onLoad={e => removeSkylineBg(e.currentTarget)}
+            decoding="async"
+            onLoad={e => {
+              if (getComputedStyle(e.currentTarget).display !== 'none') {
+                removeSkylineBg(e.currentTarget);
+              }
+            }}
           />
         </div>
 

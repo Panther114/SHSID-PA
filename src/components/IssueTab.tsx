@@ -8,37 +8,26 @@ interface IssueTabProps {
   issueNumber: number;
   guides: Guide[];
   subjects: Subject[];
-  search: string;
+  hasActiveSearch: boolean;
   canManageGuides: boolean;
   token: string | null;
   onRemove: (id: number) => void;
 }
 
 export default function IssueTab({
-  issueNumber, guides, subjects, search, canManageGuides, token, onRemove,
+  issueNumber, guides, subjects, hasActiveSearch, canManageGuides, token, onRemove,
 }: IssueTabProps) {
   const [open, setOpen] = useState(false);
-  const hasActiveSearch = search.trim().length > 0;
-
-  const filteredGuides = useMemo(() => {
-    if (!search.trim()) return guides;
-    const q = search.trim().toLowerCase();
-    return guides.filter(g =>
-      g.title.toLowerCase().includes(q) ||
-      g.subject.toLowerCase().includes(q) ||
-      g.subject_level.toLowerCase().includes(q)
-    );
-  }, [guides, search]);
 
   const bySubjectLevel = useMemo(() => {
     const idx: Record<string, Record<string, Guide[]>> = {};
-    for (const g of filteredGuides) {
+    for (const g of guides) {
       if (!idx[g.subject]) idx[g.subject] = {};
       if (!idx[g.subject][g.subject_level]) idx[g.subject][g.subject_level] = [];
       idx[g.subject][g.subject_level].push(g);
     }
     return idx;
-  }, [filteredGuides]);
+  }, [guides]);
 
   return (
     <div className={`issue-tab${open ? ' open' : ''}`}>

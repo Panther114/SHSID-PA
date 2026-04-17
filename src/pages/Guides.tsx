@@ -30,6 +30,7 @@ export default function Guides() {
   const [error,     setError]     = useState('');
   const [showModal, setShowModal] = useState(false);
   const [search,    setSearch]    = useState('');
+  const hasActiveSearch = search.trim().length > 0;
 
   useEffect(() => {
     if (!canViewGuides) {
@@ -217,7 +218,7 @@ export default function Guides() {
                   issueNumber={issue}
                   guides={byIssue[issue]}
                   subjects={subjects}
-                  search={search}
+                  hasActiveSearch={hasActiveSearch}
                   canManageGuides={canManageGuides}
                   token={token}
                   onRemove={removeGuide}
