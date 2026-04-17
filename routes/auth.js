@@ -11,6 +11,7 @@ const path = require('path');
 const router = express.Router();
 // Student G-number whitelist file at repository root. Restart server after updating this file.
 const grade10Path = path.join(__dirname, '..', 'Grade_10.txt');
+const jwtSecret = process.env.JWT_SECRET;
 
 function loadGrade10Set() {
   try {
@@ -38,33 +39,43 @@ const loginLimiter = rateLimit({
 
 // POST /api/auth/login
 router.post('/login', loginLimiter, async (req, res) => {
+  if (!jwtSecret) {
+    console.error('JWT_SECRET is not configured');
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+
   const mode = String(req.body?.mode ?? '').toLowerCase();
   if (mode !== 'admin' && mode !== 'student') {
     return res.status(400).json({ error: 'Login mode must be admin or student' });
   }
 
   if (mode === 'student') {
-    const gNumberRaw = String(req.body?.gNumber ?? '').trim();
-    if (!gNumberRaw) {
-      return res.status(400).json({ error: 'G number is required' });
-    }
+    try {
+      const gNumberRaw = String(req.body?.gNumber ?? '').trim();
+      if (!gNumberRaw) {
+        return res.status(400).json({ error: 'G number is required' });
+      }
 
-    if (!grade10Set) {
+      if (!grade10Set) {
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+
+      const normalizedGNumber = gNumberRaw.toLowerCase();
+      if (!grade10Set.has(normalizedGNumber)) {
+        return res.status(401).json({ error: 'Invalid G number' });
+      }
+
+      const token = jwt.sign(
+        { sub: gNumberRaw, g_number: gNumberRaw, role: 'student' },
+        jwtSecret,
+        { expiresIn: '24h' }
+      );
+
+      return res.json({ token, role: 'student' });
+    } catch (err) {
+      console.error('Student login error:', err);
       return res.status(500).json({ error: 'Internal server error' });
     }
-
-    const normalizedGNumber = gNumberRaw.toLowerCase();
-    if (!grade10Set.has(normalizedGNumber)) {
-      return res.status(401).json({ error: 'Invalid G number' });
-    }
-
-    const token = jwt.sign(
-      { sub: gNumberRaw, g_number: gNumberRaw, role: 'student' },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    return res.json({ token, role: 'student' });
   }
 
   const email = String(req.body?.email ?? '').trim();
@@ -96,7 +107,7 @@ router.post('/login', loginLimiter, async (req, res) => {
 
     const token = jwt.sign(
       { sub: user.id, email: user.email, role: 'admin' },
-      process.env.JWT_SECRET,
+      jwtSecret,
       { expiresIn: '24h' }
     );
 

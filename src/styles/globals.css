@@ -185,6 +185,7 @@ nav::after {
   opacity: 0.6;
   background: linear-gradient(90deg, transparent 0%, var(--c-accent2) 50%, transparent 100%);
   animation: navSweep 7s linear infinite;
+  pointer-events: none;
 }
 
 .nav-logo {
@@ -258,6 +259,7 @@ nav::after {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.1);
   border-color: rgba(239, 68, 68, 0.35);
+  border-radius: 7px;
 }
 .nav-status-badge.status-student {
   color: #22c55e;
