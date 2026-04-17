@@ -20,7 +20,7 @@ const revealVariants = {
 
 export default function Guides() {
   const { theme, toggle } = useTheme();
-  const { token, authed, role, login } = useAuth();
+  const { token, role, login, logout } = useAuth();
   const canViewGuides = role === 'admin' || role === 'student';
   const canManageGuides = role === 'admin';
 
@@ -97,9 +97,10 @@ export default function Guides() {
         onToggle={toggle}
         role={role}
         onLoginClick={() => setShowModal(true)}
+        onLogout={logout}
       />
 
-      {showModal && !authed && (
+      {showModal && !canViewGuides && (
         <LoginModal onClose={() => setShowModal(false)} onSuccess={login} />
       )}
 

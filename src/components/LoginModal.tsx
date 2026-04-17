@@ -54,6 +54,13 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
     if (!loading) submit();
   };
 
+  const pickMode = (nextMode: 'admin' | 'student') => {
+    setMode(nextMode);
+    setError('');
+    setEmail('');
+    setPassword('');
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -79,19 +86,29 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
             <form className="modal-content" onSubmit={onSubmit}>
               <h2 className="modal-title" id="modal-title">Login</h2>
               <div className="form-field">
-                <label className="form-label" htmlFor="login-mode">Login Type</label>
-                <select
-                  id="login-mode"
-                  className="form-input"
-                  value={mode}
-                  aria-label="Select Admin or Student"
-                  required
-                  onChange={e => setMode(e.target.value as 'admin' | 'student' | '')}
-                >
-                  <option value="" disabled hidden>Select Admin or Student</option>
-                  <option value="admin">Admin Login</option>
-                  <option value="student">Student Login</option>
-                </select>
+                <div className="form-label">Login Type</div>
+                <div className="login-role-picker" role="radiogroup" aria-label="Select login type">
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={isStudentMode}
+                    className={`login-role-btn${isStudentMode ? ' active' : ''}`}
+                    onClick={() => pickMode('student')}
+                  >
+                    <span className="login-role-title">Student</span>
+                    <span className="login-role-sub">Use your G number</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={isAdminMode}
+                    className={`login-role-btn${isAdminMode ? ' active' : ''}`}
+                    onClick={() => pickMode('admin')}
+                  >
+                    <span className="login-role-title">Admin</span>
+                    <span className="login-role-sub">Use account + password</span>
+                  </button>
+                </div>
               </div>
               {error && (
                 <motion.div
@@ -103,13 +120,15 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                 </motion.div>
               )}
               <div className="form-field">
-                <label className="form-label" htmlFor="login-email">Account</label>
+                <label className="form-label" htmlFor="login-email">
+                  {isStudentMode ? 'G Number' : 'Account'}
+                </label>
                 <input
                   id="login-email"
                   className="form-input"
                   type="text"
                   autoComplete="username"
-                  placeholder={isStudentMode ? 'G number' : 'account name'}
+                  placeholder={isStudentMode ? 'Enter your G number' : 'Enter account name'}
                   value={email}
                   required
                   onChange={e => setEmail(e.target.value)}
