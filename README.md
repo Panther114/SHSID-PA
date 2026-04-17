@@ -8,12 +8,16 @@ SHSID Peer Advisors (PA) web platform for browsing and managing peer-written aca
   - Animated hero section with theme-aware visuals
   - Direct entry point to the guides library
 - **Guides library (`/guides.html`)**
+  - Resource list is hidden until login (`Log in to view resources`)
+  - Student or admin login can view guides; only admin can upload/remove guides
   - Fetches guides from `GET /api/guides`
   - Organizes content by semester period → subject → level
   - Supports real-time search by title, subject, and level
   - Includes inline PDF viewing links (`/api/guides/pdf/:filename`)
-  - Admin login modal for authorized staff
-  - Admin-only guide removal controls
+  - Login modal supports:
+    - **Admin Login** (account + password, JWT role `admin`)
+    - **Student Login** (G number only, matched against `Grade_10.txt`, JWT role `student`)
+  - Admin-only guide removal controls and upload access
 - **Guide upload (`/upload.html`)**
   - JWT-gated page (redirects if session is invalid)
   - Auto-generates guide titles from selected semester/subject/level
@@ -26,7 +30,9 @@ SHSID Peer Advisors (PA) web platform for browsing and managing peer-written aca
 
 ## Backend/API summary
 
-- **Auth**: `POST /api/auth/login` (JWT issued for authorized users)
+- **Auth**: `POST /api/auth/login`
+  - `mode: "admin"`: account/password login for authorized staff
+  - `mode: "student"`: G-number login validated against `Grade_10.txt`
 - **Guides**:
   - `GET /api/guides`
   - `POST /api/guides/upload` (auth required, PDF only)

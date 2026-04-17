@@ -5,8 +5,28 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const pool = require('../db');
+const fs = require('fs');
+const path = require('path');
 
 const router = express.Router();
+// Student G-number whitelist file at repository root. Restart server after updating this file.
+const grade10Path = path.join(__dirname, '..', 'Grade_10.txt');
+
+function loadGrade10Set() {
+  try {
+    const content = fs.readFileSync(grade10Path, 'utf8');
+    return new Set(
+      content
+        .split(/\r?\n/)
+        .map((line) => line.trim().toLowerCase())
+        .filter(Boolean)
+    );
+  } catch (err) {
+    console.error('Failed to read Grade_10.txt:', err);
+    return null;
+  }
+}
+const grade10Set = loadGrade10Set();
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -18,7 +38,37 @@ const loginLimiter = rateLimit({
 
 // POST /api/auth/login
 router.post('/login', loginLimiter, async (req, res) => {
-  const { email, password } = req.body;
+  const mode = String(req.body?.mode ?? '').toLowerCase();
+  if (mode !== 'admin' && mode !== 'student') {
+    return res.status(400).json({ error: 'Login mode must be admin or student' });
+  }
+
+  if (mode === 'student') {
+    const gNumberRaw = String(req.body?.gNumber ?? '').trim();
+    if (!gNumberRaw) {
+      return res.status(400).json({ error: 'G number is required' });
+    }
+
+    if (!grade10Set) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    const normalizedGNumber = gNumberRaw.toLowerCase();
+    if (!grade10Set.has(normalizedGNumber)) {
+      return res.status(401).json({ error: 'Invalid G number' });
+    }
+
+    const token = jwt.sign(
+      { sub: gNumberRaw, g_number: gNumberRaw, role: 'student' },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    return res.json({ token, role: 'student' });
+  }
+
+  const email = String(req.body?.email ?? '').trim();
+  const password = String(req.body?.password ?? '');
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required' });
   }
@@ -45,12 +95,12 @@ router.post('/login', loginLimiter, async (req, res) => {
     }
 
     const token = jwt.sign(
-      { sub: user.id, email: user.email },
+      { sub: user.id, email: user.email, role: 'admin' },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    res.json({ token });
+    res.json({ token, role: 'admin' });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Internal server error' });

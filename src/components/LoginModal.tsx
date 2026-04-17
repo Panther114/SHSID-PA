@@ -12,18 +12,28 @@ const MODAL_LEFT_POP_ANIMATE = { opacity: 1, y: 0, x: 0, scale: 1 };
 export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
+  const [mode, setMode]         = useState<'admin' | 'student' | ''>('');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
+  const isStudentMode = mode === 'student';
+  const isAdminMode = mode === 'admin';
 
   const submit = async () => {
     setError('');
-    if (!email || !password) { setError('Account and password are required.'); return; }
+    if (!mode) { setError('Please select Admin or Student.'); return; }
+    if (!email) { setError(isStudentMode ? 'G number is required.' : 'Account is required.'); return; }
+    if (isAdminMode && !password) { setError('Account and password are required.'); return; }
+
     setLoading(true);
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(
+          isStudentMode
+            ? { mode: 'student', gNumber: email }
+            : { mode: 'admin', email, password }
+        ),
       });
       const data = await res.json() as { token?: string; error?: string };
       if (!res.ok) { setError(data.error ?? 'Login failed.'); return; }
@@ -60,31 +70,22 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
         >
           <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
           <div className="modal-inner">
-            <motion.div
-              className="modal-visual"
-              initial={{ opacity: 0, x: -26, scale: 1.05 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.03 }}
-              aria-hidden="true"
-            >
-              <div className="modal-visual-overlay" />
-              <img
-                className="modal-visual-image skyline-dark"
-                src="/images/hero/shanghai-skyline-dark.png"
-                alt=""
-                role="presentation"
-                draggable={false}
-              />
-              <img
-                className="modal-visual-image skyline-light"
-                src="/images/hero/shanghai-skyline-light.png"
-                alt=""
-                role="presentation"
-                draggable={false}
-              />
-            </motion.div>
             <div className="modal-content">
-              <h2 className="modal-title" id="modal-title">Admin Login</h2>
+              <h2 className="modal-title" id="modal-title">Login</h2>
+              <div className="form-field">
+                <label className="form-label" htmlFor="login-mode">Login Type</label>
+                <select
+                  id="login-mode"
+                  className="form-input"
+                  value={mode}
+                  aria-label="Select Admin or Student"
+                  onChange={e => setMode(e.target.value as 'admin' | 'student' | '')}
+                >
+                  <option value="" disabled hidden>Select Admin or Student</option>
+                  <option value="admin">Admin Login</option>
+                  <option value="student">Student Login</option>
+                </select>
+              </div>
               {error && (
                 <motion.div
                   className="form-error"
@@ -101,25 +102,27 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
                   className="form-input"
                   type="text"
                   autoComplete="username"
-                  placeholder="account name"
+                  placeholder={isStudentMode ? 'G number' : 'account name'}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   onKeyDown={onKey}
                 />
               </div>
-              <div className="form-field" style={{ marginBottom: '1.25rem' }}>
-                <label className="form-label" htmlFor="login-password">Password</label>
-                <input
-                  id="login-password"
-                  className="form-input"
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  onKeyDown={onKey}
-                />
-              </div>
+              {!isStudentMode && (
+                <div className="form-field" style={{ marginBottom: '1.25rem' }}>
+                  <label className="form-label" htmlFor="login-password">Password</label>
+                  <input
+                    id="login-password"
+                    className="form-input"
+                    type="password"
+                    autoComplete="current-password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    onKeyDown={onKey}
+                  />
+                </div>
+              )}
               <button className="full-btn" onClick={submit} disabled={loading}>
                 {loading ? 'Signing in…' : 'Sign In'}
               </button>

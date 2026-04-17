@@ -9,13 +9,13 @@ interface IssueTabProps {
   guides: Guide[];
   subjects: Subject[];
   search: string;
-  authed: boolean;
+  canManageGuides: boolean;
   token: string | null;
   onRemove: (id: number) => void;
 }
 
 export default function IssueTab({
-  issueNumber, guides, subjects, search, authed, token, onRemove,
+  issueNumber, guides, subjects, search, canManageGuides, token, onRemove,
 }: IssueTabProps) {
   const [open, setOpen] = useState(false);
   const hasActiveSearch = search.trim().length > 0;
@@ -96,7 +96,7 @@ export default function IssueTab({
                                   key={g.id}
                                   guide={g}
                                   idx={cardIdx}
-                                  authed={authed}
+                                  canManageGuides={canManageGuides}
                                   token={token}
                                   onRemove={onRemove}
                                 />

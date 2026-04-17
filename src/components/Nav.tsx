@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Theme } from '../types';
+import type { AuthRole, Theme } from '../types';
 
 interface NavProps {
   theme: Theme;
   onToggle: () => void;
-  authed?: boolean;
+  role?: AuthRole;
   onLoginClick?: () => void;
 }
 
@@ -16,11 +16,13 @@ const themeIcon: Record<Theme, string> = {
   pink: '🌙',
 };
 
-export default function Nav({ theme, onToggle, authed, onLoginClick }: NavProps) {
+export default function Nav({ theme, onToggle, role, onLoginClick }: NavProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   const isGuides = location.pathname === '/guides';
+  const isAdmin = role === 'admin';
+  const isStudent = role === 'student';
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -38,16 +40,29 @@ export default function Nav({ theme, onToggle, authed, onLoginClick }: NavProps)
           ) : (
             <Link to="/guides" className="nav-link">Resources</Link>
           )}
-          {authed != null && (
-            authed ? (
-              <Link to="/upload" className="btn btn-primary" style={{ marginRight: '0.2rem' }}>
-                Upload Guide
-              </Link>
-            ) : onLoginClick ? (
-              <button className="btn btn-ghost" onClick={onLoginClick}>
-                Login
-              </button>
-            ) : null
+          {!isGuides && isAdmin && (
+            <Link to="/upload" className="btn btn-primary" style={{ marginRight: '0.2rem' }}>
+              Upload Guide
+            </Link>
+          )}
+          {isGuides && (
+            <>
+              {!isStudent && !isAdmin && onLoginClick && (
+                <button className="btn btn-ghost" onClick={onLoginClick}>
+                  Login
+                </button>
+              )}
+              <span
+                className={`nav-status-badge ${isAdmin ? 'status-admin' : isStudent ? 'status-student' : 'status-none'}`}
+              >
+                {isAdmin ? 'Admin' : isStudent ? 'Student' : 'Not logged in'}
+              </span>
+            </>
+          )}
+          {isGuides && isAdmin && (
+            <Link to="/upload" className="btn btn-primary" style={{ marginRight: '0.2rem' }}>
+              Upload Guide
+            </Link>
           )}
           <button className="theme-btn" onClick={onToggle} aria-label="Toggle theme" title="Toggle theme">
             {themeIcon[theme]}
@@ -85,22 +100,32 @@ export default function Nav({ theme, onToggle, authed, onLoginClick }: NavProps)
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             >
               <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Home</Link>
-              <Link to="/guides" className="mobile-nav-link" onClick={closeMenu}>Resources</Link>
-              {authed != null && (
+              {!isGuides && <Link to="/guides" className="mobile-nav-link" onClick={closeMenu}>Resources</Link>}
+              {isAdmin && (
                 <>
                   <div className="mobile-nav-divider" />
-                  {authed ? (
-                    <Link to="/upload" className="mobile-nav-link" onClick={closeMenu}>
-                      Upload Guide
-                    </Link>
-                  ) : onLoginClick ? (
-                    <button
-                      className="mobile-nav-link"
-                      onClick={() => { closeMenu(); onLoginClick(); }}
-                    >
-                      Login
-                    </button>
-                  ) : null}
+                  <Link to="/upload" className="mobile-nav-link" onClick={closeMenu}>
+                    Upload Guide
+                  </Link>
+                </>
+              )}
+              {isGuides && !isAdmin && !isStudent && onLoginClick && (
+                <>
+                  <div className="mobile-nav-divider" />
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => { closeMenu(); onLoginClick(); }}
+                  >
+                    Login
+                  </button>
+                </>
+              )}
+              {isGuides && (
+                <>
+                  <div className="mobile-nav-divider" />
+                  <div className={`mobile-nav-status ${isAdmin ? 'status-admin' : isStudent ? 'status-student' : 'status-none'}`}>
+                    {isAdmin ? 'Admin' : isStudent ? 'Student' : 'Not logged in'}
+                  </div>
                 </>
               )}
               <div className="mobile-nav-divider" />
